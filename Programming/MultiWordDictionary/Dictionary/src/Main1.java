@@ -1,13 +1,10 @@
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -15,13 +12,12 @@ import java.util.logging.Logger;
  */
 public class Main1 {
 
-    public static void main(String[] args) {
-        File f = new File("./words");
-        ArrayList<String> ar = new ArrayList();
-        FilenameFilter filter = (File f1, String name) -> name.endsWith(".txt");
-        File pathnames[] = f.listFiles(filter);
+    public static void main(String[] args) throws FileNotFoundException {
+        File wordDirectory = new File("./words");
+        FilenameFilter txtFilter = (File f1, String name) -> name.endsWith(".txt");
+        File wordPath[] = wordDirectory.listFiles(txtFilter);
         Hashtable<String, Integer> dictionary = new Hashtable<>();
-        for (File a : pathnames) {
+        for (File a : wordPath) {
             try {
                 // Puts to read only to speed up maybe???
                 //a.setReadOnly();
@@ -70,5 +66,28 @@ public class Main1 {
                 System.out.println("There is an error of " + e.getMessage());
             }
         }
+        File q = new File("./Definitions");
+        File qp[] = q.listFiles(txtFilter);
+        for (File h : qp) {
+            Scanner scan = new Scanner(h); // Could potentially add Try-catch
+            while (scan.hasNextLine()) {
+                String word = scan.next().trim();
+                /* 2 Options Words or Prefix */
+                String p = scan.nextLine().trim();
+                if (p.contains("(") && p.contains(")")) {
+                    String pos = p.substring(p.indexOf("("), p.indexOf(")") + 1).trim();
+                    String def = p.substring(p.indexOf(")") + 1).trim();
+//                    System.out.println("POS: " + pos);
+//                    System.out.println("DEF: " + def);
+                } else {
+                    System.out.println(p);
+                }
+                // scan.nextLine();
+            }
+            System.out.println("Read through the file " + h.getName());
+        }
+        // Need to store the definitions into a hash table
+        // Reach it by getting the hash
+        // Check to see if it is a word first
     }
 }
