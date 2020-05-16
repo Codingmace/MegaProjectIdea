@@ -1,7 +1,7 @@
 import zipfile
 import os
 import fnmatch
-import numpy as np
+# from numpy import array
 
 def f1(fn, dest):
     with open(fn, 'rb') as f:
@@ -16,10 +16,13 @@ def f1(fn, dest):
     return total
 
 def printFiles(folderpath, pattern):
+    x = []
     listOfFiles = os.listdir(folderpath)
     for entry in listOfFiles:
         if fnmatch.fnmatch(entry, pattern):
             print (entry)
+            x.append(entry)
+    return x
     
 
 # Get the folder of all the backups
@@ -37,7 +40,13 @@ def printFiles(folderpath, pattern):
 
 
 def main():
-    printFiles('TestData', '*.zip')
+    filesList = printFiles('TestData', '*.zip') # Get valid zip files
+    # Check get the compatable ones
+    y = []
+    while len(filesList) is not 0:
+        for day in fileList:  
+
+
     listFiles = os.listdir(".")
 
 #    filename = "~/TestData"
