@@ -32,15 +32,34 @@ def printFiles(folderpath, pattern):
             x.append(entry)
     return x
     
-
-
+def sort(x):
+    fin = []
+    i = 0
+    while len(x) is not 0:
+        min = x[0]
+        minTime = min.split("-")
+        for d in x:
+            tx = d.split("-")
+            if tx[2] <= minTime[2]: # TX month is earlier or same as minimum
+                if tx[0] <= minTime[0]: # TX month is earlier or same as minimum
+                    if tx[1] < minTime[1]: # Tx day is earlier than minimum
+                        min = d
+                        minTime = d.split("-")
+        fin.append(min) # Put minimum into array
+        x.remove(min) # Remove minimum 
+    return fin
 
 def main():
     filesList = printFiles('TestData', '*.zip') # Get valid zip files
+    # Need to adjust for multiple states of files
+    # Example Files.zip and Itunes.zip
+    
     # Check get the compatable ones
-    y = []
-    filesList.sort()
+    sets = sort(filesList)
+    for d in sets:
+        print(d)
     while len(filesList) is not 0:
+        
         for day in filesList:
             dateIndex = day.rfind(" ")
             fileName = day[:dateIndex]
