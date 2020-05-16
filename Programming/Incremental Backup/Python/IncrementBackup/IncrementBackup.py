@@ -49,13 +49,9 @@ def main():
         for day in filesList:
             dateIndex = day.rfind(" ")
             fileName = day[:dateIndex]
-            dateTime = day[dateIndex + 1]
-            last_char_index = original_string.rfind(".")
-            new_string = original_string[:last_char_index] + "," + original_string[last_char_index+1:]
-            print(day.split('-'))
+            dateTime = day[dateIndex + 1:-4]
+            print(dateTime)
+            y.append(dateTime.split("-"))
 
-    listFiles = os.listdir(".")
 
-#    filename = "~/TestData"
-#    f = open(filename)
 main()
