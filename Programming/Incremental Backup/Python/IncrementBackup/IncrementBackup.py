@@ -3,6 +3,7 @@ import os
 import fnmatch
 # from numpy import array
 
+# Different way to extract zip files
 def f1(fn, dest):
     with open(fn, 'rb') as f:
         zf = zipfile.ZipFile(f)
@@ -15,6 +16,13 @@ def f1(fn, dest):
             total += _count_file(fn)
     return total
 
+
+# URL TO CHECK
+# https://docs.python.org/3/library/zipfile.html
+# https://www.peterbe.com/plog/fastest-way-to-unzip-a-zip-file-in-python
+
+
+
 def printFiles(folderpath, pattern):
     x = []
     listOfFiles = os.listdir(folderpath)
@@ -25,18 +33,6 @@ def printFiles(folderpath, pattern):
     return x
     
 
-# Get the folder of all the backups
-# Organize and zip files extracted to folders 1 -10 accordingly
-# Write the changes to be made file using code
-# Adjust the following files with the changes in files IE deleting
-    # Files that are written to can add extension .abby and .jacob
-# Recompress the folders
-
-# Write a decompression function and how that will change
-
-# URL TO CHECK
-# https://docs.python.org/3/library/zipfile.html
-# https://www.peterbe.com/plog/fastest-way-to-unzip-a-zip-file-in-python
 
 
 def main():
@@ -55,3 +51,13 @@ def main():
 
 
 main()
+
+
+# Get the folder of all the backups
+# Organize and zip files extracted to folders 1 -10 accordingly
+# Write the changes to be made file using code
+# Adjust the following files with the changes in files IE deleting
+    # Files that are written to can add extension .abby and .jacob
+# Recompress the folders
+
+# Write a decompression function and how that will change
