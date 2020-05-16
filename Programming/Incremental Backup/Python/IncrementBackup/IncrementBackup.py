@@ -43,9 +43,16 @@ def main():
     filesList = printFiles('TestData', '*.zip') # Get valid zip files
     # Check get the compatable ones
     y = []
+    filesList.sort()
     while len(filesList) is not 0:
-        for day in fileList:  
-
+        min = filesList.pop()
+        for day in filesList:
+            dateIndex = day.rfind(" ")
+            fileName = day[:dateIndex]
+            dateTime = day[dateIndex + 1]
+            last_char_index = original_string.rfind(".")
+            new_string = original_string[:last_char_index] + "," + original_string[last_char_index+1:]
+            print(day.split('-'))
 
     listFiles = os.listdir(".")
 
