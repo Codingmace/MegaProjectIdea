@@ -21,7 +21,7 @@ def f1(fn, dest):
 # https://docs.python.org/3/library/zipfile.html
 # https://www.peterbe.com/plog/fastest-way-to-unzip-a-zip-file-in-python
 
-def md5_for_file(filePath, block_size=2**20):
+def md5_a_file(filePath, block_size=128 * 16):
     md5 = hashlib.md5()
     f = open(filePath, "rb")
     while True:
@@ -29,17 +29,8 @@ def md5_for_file(filePath, block_size=2**20):
         if not data:
             break
         md5.update(data)
-    return md5.digest()
-
-def md5(filePath):
-    f = open(filePath, "rb")
-    file_hash = hashlib.md5()
-    while chunk := f.read(8192): # Can be any multiple of 128
-        file_hash.update(chunk)
-    print(file_hash.digest())
-    print(file_hash.hexdigest())  # to get a printable str instead of bytes
-    return file_hash.hexdigest()
-
+    
+    return md5.hexdigest()
 
 def printFiles(folderpath, pattern):
     x = []
@@ -50,7 +41,7 @@ def printFiles(folderpath, pattern):
             x.append(entry)
     return x
     
-def sort(x):
+def sortDates(x):
     fin = []
     i = 0
     fileName = x[0].rfind(" ")
@@ -75,12 +66,13 @@ def sort(x):
 
 def main():
     workspace = "TestData"
+    # os.chdir(workspace) # Created issues
     filesList = printFiles('TestData', '*.zip') # Get valid zip files
     # Need to adjust for multiple states of files
                                                    # Example Files.zip and Itunes.zip
     
     # Check get the compatable ones
-    sets = sort(filesList) # This sorting works
+    sets = sortDates(filesList) # This sorting works
     print("Sorted list") 
     for d in sets:
         print(d)
@@ -93,18 +85,22 @@ def main():
         if not os.path.exists(dirName):
             os.mkdir(dirName)
             print("Directory " , dirName ,  " Created ")
-            if (i == 1):
+            if (i == 0):
                 print("That is the file")
-                zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
-#                f1(sets[i], dirName)
+                break
         else:
             print("Directory " , dirName ,  " already exists")
-
+        zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
+                
     # Compare all of them to the folder 0
     # First need md5 of all the files
-        
-
-
+    os.chdir("Output\\0")
+    baseFiles = printFiles(".", "*"); # What comparing everything to
+    baseHash = []
+    print(os.path.abspath(baseFiles[0]))
+    for b in baseFiles:
+        baseHash.append(md5_a_file(b))
+        print(md5_a_file(b))
 
 main()
 
