@@ -73,8 +73,13 @@ def main():
         if not os.path.exists(dirName):
             os.mkdir(dirName)
             print("Directory " , dirName ,  " Created ")
-        else:    
+            if (i == 1):
+                print("That is the file")
+                zipfile.ZipFile(sets[i]).extractall(dirName)
+#                f1(sets[i], dirName)
+        else:
             print("Directory " , dirName ,  " already exists")
+    
         
 
 
