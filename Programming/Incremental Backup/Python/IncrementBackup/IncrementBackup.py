@@ -60,16 +60,23 @@ def main():
     # Example Files.zip and Itunes.zip
     
     # Check get the compatable ones
-    sets = sort(filesList)
-    print("Sorted list")
+    sets = sort(filesList) # This sorting works
+    print("Sorted list") 
     for d in sets:
         print(d)
 
-    #dateIndex = day.rfind(" ")
-    #fileName = day[:dateIndex]
-    #dateTime = day[dateIndex + 1:-4]
-    #print(dateTime)
-    #y.append(dateTime.split("-"))
+    # Since they are zip have to extract them
+    # Adjust later for temporary files
+    for i in range(0, len(sets) -1 , 1):
+        # Create target Directory if don't exist
+        dirName = "Output\\" + str(i)
+        if not os.path.exists(dirName):
+            os.mkdir(dirName)
+            print("Directory " , dirName ,  " Created ")
+        else:    
+            print("Directory " , dirName ,  " already exists")
+        
+
 
 
 main()
