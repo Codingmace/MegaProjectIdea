@@ -1,6 +1,7 @@
 import zipfile
 import os
 import fnmatch
+import hashlib
 # from numpy import array
 
 # Different way to extract zip files
@@ -16,11 +17,28 @@ def f1(fn, dest):
             total += _count_file(fn)
     return total
 
-
 # URL TO CHECK
 # https://docs.python.org/3/library/zipfile.html
 # https://www.peterbe.com/plog/fastest-way-to-unzip-a-zip-file-in-python
 
+def md5_for_file(filePath, block_size=2**20):
+    md5 = hashlib.md5()
+    f = open(filePath, "rb")
+    while True:
+        data = f.read(block_size)
+        if not data:
+            break
+        md5.update(data)
+    return md5.digest()
+
+def md5(filePath):
+    f = open(filePath, "rb")
+    file_hash = hashlib.md5()
+    while chunk := f.read(8192): # Can be any multiple of 128
+        file_hash.update(chunk)
+    print(file_hash.digest())
+    print(file_hash.hexdigest())  # to get a printable str instead of bytes
+    return file_hash.hexdigest()
 
 
 def printFiles(folderpath, pattern):
@@ -28,7 +46,7 @@ def printFiles(folderpath, pattern):
     listOfFiles = os.listdir(folderpath)
     for entry in listOfFiles:
         if fnmatch.fnmatch(entry, pattern):
-            print (entry)
+            print(entry)
             x.append(entry)
     return x
     
@@ -48,17 +66,18 @@ def sort(x):
                 if int(tx[0][fileName:]) <= int(minTime[0][fileName:]): # TX month is earlier or same as minimum
                     if int(tx[1]) < int(minTime[1]): # Tx day is earlier than minimum
                         min = d
-#                        print("made it here setting" + min + " as the smallest")
+#                        print("made it here setting" + min + " as the
+#                        smallest")
                         minTime = d.split("-")
         fin.append(min) # Put minimum into array
-        x.remove(min) # Remove minimum 
+        x.remove(min) # Remove minimum
     return fin
 
 def main():
     workspace = "TestData"
     filesList = printFiles('TestData', '*.zip') # Get valid zip files
     # Need to adjust for multiple states of files
-    # Example Files.zip and Itunes.zip
+                                                   # Example Files.zip and Itunes.zip
     
     # Check get the compatable ones
     sets = sort(filesList) # This sorting works
@@ -76,11 +95,13 @@ def main():
             print("Directory " , dirName ,  " Created ")
             if (i == 1):
                 print("That is the file")
-                zipfile.ZipFile(workspace+ "\\" + sets[i]).extractall(dirName)
+                zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 #                f1(sets[i], dirName)
         else:
             print("Directory " , dirName ,  " already exists")
-    
+
+    # Compare all of them to the folder 0
+    # First need md5 of all the files
         
 
 
@@ -88,11 +109,9 @@ def main():
 main()
 
 
-# Get the folder of all the backups
-# Organize and zip files extracted to folders 1 -10 accordingly
 # Write the changes to be made file using code
 # Adjust the following files with the changes in files IE deleting
-    # Files that are written to can add extension .abby and .jacob
+# Files that are written to can add extension .abby and .jacob
 # Recompress the folders
 
 # Write a decompression function and how that will change
