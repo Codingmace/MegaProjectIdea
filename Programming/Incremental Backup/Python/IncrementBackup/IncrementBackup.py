@@ -35,17 +35,18 @@ def printFiles(folderpath, pattern):
 def sort(x):
     fin = []
     i = 0
+    fileName = x[0].rfind(" ")
     while len(x) is not 0:
         min = x[0]
         minTime = min.split("-")
         for d in x:
             tx = d.split("-")
-            print(tx)
-            if tx[2] <= minTime[2]: # TX month is earlier or same as minimum
-                if tx[0] <= minTime[0]: # TX month is earlier or same as minimum
-                    if tx[1][-1:] < minTime[1][-1:]: # Tx day is earlier than minimum
+#            print(tx)
+            if int(tx[2][:-4]) <= int(minTime[2][:-4]): # TX month is earlier or same as minimum
+                if int(tx[0][fileName:]) <= int(minTime[0][fileName:]): # TX month is earlier or same as minimum
+                    if int(tx[1]) < int(minTime[1]): # Tx day is earlier than minimum
                         min = d
-                        print("made it here setting" + min + " as the smallest")
+#                        print("made it here setting" + min + " as the smallest")
                         minTime = d.split("-")
         fin.append(min) # Put minimum into array
         x.remove(min) # Remove minimum 
