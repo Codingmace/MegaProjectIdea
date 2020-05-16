@@ -55,6 +55,7 @@ def sort(x):
     return fin
 
 def main():
+    workspace = "TestData"
     filesList = printFiles('TestData', '*.zip') # Get valid zip files
     # Need to adjust for multiple states of files
     # Example Files.zip and Itunes.zip
@@ -67,7 +68,7 @@ def main():
 
     # Since they are zip have to extract them
     # Adjust later for temporary files
-    for i in range(0, len(sets) -1 , 1):
+    for i in range(0, len(sets) , 1):
         # Create target Directory if don't exist
         dirName = "Output\\" + str(i)
         if not os.path.exists(dirName):
@@ -75,7 +76,7 @@ def main():
             print("Directory " , dirName ,  " Created ")
             if (i == 1):
                 print("That is the file")
-                zipfile.ZipFile(sets[i]).extractall(dirName)
+                zipfile.ZipFile(workspace+ "\\" + sets[i]).extractall(dirName)
 #                f1(sets[i], dirName)
         else:
             print("Directory " , dirName ,  " already exists")
