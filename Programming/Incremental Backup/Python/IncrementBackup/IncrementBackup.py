@@ -41,7 +41,6 @@ def main():
     y = []
     filesList.sort()
     while len(filesList) is not 0:
-        min = filesList.pop()
         for day in filesList:
             dateIndex = day.rfind(" ")
             fileName = day[:dateIndex]
