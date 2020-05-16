@@ -42,6 +42,8 @@ def sort(x):
         for d in x:
             tx = d.split("-")
 #            print(tx)
+
+        # Can simplify by to say months and days
             if int(tx[2][:-4]) <= int(minTime[2][:-4]): # TX month is earlier or same as minimum
                 if int(tx[0][fileName:]) <= int(minTime[0][fileName:]): # TX month is earlier or same as minimum
                     if int(tx[1]) < int(minTime[1]): # Tx day is earlier than minimum
