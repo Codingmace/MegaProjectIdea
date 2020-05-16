@@ -85,9 +85,6 @@ def main():
         if not os.path.exists(dirName):
             os.mkdir(dirName)
             print("Directory " , dirName ,  " Created ")
-            if (i == 0):
-                print("That is the file")
-                break
         else:
             print("Directory " , dirName ,  " already exists")
         zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
@@ -101,7 +98,7 @@ def main():
     for b in baseFiles:
         baseHash.append(md5_a_file(b))
         print(md5_a_file(b))
-
+    
 main()
 
 
