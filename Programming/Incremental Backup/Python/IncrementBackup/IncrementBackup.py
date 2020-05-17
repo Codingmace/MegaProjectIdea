@@ -2,6 +2,7 @@ import zipfile
 import os
 import fnmatch
 import hashlib
+import sys
 # from numpy import array
 
 # Different way to extract zip files
@@ -64,6 +65,23 @@ def sortDates(x):
         x.remove(min) # Remove minimum
     return fin
 
+
+def selectionSort(array1, array2): # Filename, Hashname
+    A = [64, 25, 12, 22, 11] 
+    # Traverse through all array elements 
+    for i in range(len(A)): 
+        # Find the minimum element in remaining unsorted array 
+        min_idx = i 
+        for j in range(i+1, len(A)): 
+            if A[min_idx] > A[j]: 
+                min_idx = j 
+        # Swap the found minimum element with the first element		 
+        A[i], A[min_idx] = A[min_idx], A[i] 
+    return A
+
+
+
+
 def main():
     workspace = "TestData"
     # os.chdir(workspace) # Created issues
@@ -92,13 +110,26 @@ def main():
     # Compare all of them to the folder 0
     # First need md5 of all the files
     os.chdir("Output\\0")
-    baseFiles = printFiles(".", "*"); # What comparing everything to
+    baseFiles = printFiles(".", "*") # What comparing everything to
     baseHash = []
     print(os.path.abspath(baseFiles[0]))
-    for b in baseFiles:
+    for b in baseFiles: # For directory 0
         baseHash.append(md5_a_file(b))
         print(md5_a_file(b))
-    
+
+    for i in range(1, len(sets) , 1):
+        os.chdir("..\\" + str(i))
+        changeFiles = printFiles(".", "*")
+        changeHash = []
+        for c in changeFiles: # The new directory
+            changeHash.append(md5_a_file(c))
+            print(md5_a_file(c))
+        A = selectionSort(changeFiles, changeHash)
+        print ("Sorted array") 
+        for i in range(len(A)): 
+            print("%d" %A[i])
+
+
 main()
 
 
