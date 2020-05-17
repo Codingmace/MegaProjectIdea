@@ -85,9 +85,9 @@ def selectionSort(array1, array2): # Filename, Hashname
         array1[i], array1[min_idx] = array1[min_idx], array1[i] 
         array2[i], array2[min_idx] = array2[min_idx], array2[i] 
     return array1, array2
-
+ 
 def getFiles(fp): # Files Path
-
+    print("I GOT FILES")
 
 
 def main():
