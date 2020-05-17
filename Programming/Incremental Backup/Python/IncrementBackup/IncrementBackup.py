@@ -38,7 +38,7 @@ def printFiles(folderpath, pattern):
     listOfFiles = os.listdir(folderpath)
     for entry in listOfFiles:
         if fnmatch.fnmatch(entry, pattern):
-            print(entry)
+#            print(entry)
             x.append(entry)
     return x
     
@@ -67,7 +67,6 @@ def sortDates(x):
 
 
 def selectionSort(array1, array2): # Filename, Hashname
-    A = [64, 25, 12, 22, 11] 
     # Traverse through all array elements 
     for i in range(len(array2)): 
         # Find the minimum element in remaining unsorted array 
@@ -78,7 +77,7 @@ def selectionSort(array1, array2): # Filename, Hashname
         # Swap the found minimum element with the first element		 
         array1[i], array1[min_idx] = array1[min_idx], array1[i] 
         array2[i], array2[min_idx] = array2[min_idx], array2[i] 
-    return array2, array1
+    return array1, array2
 
 
 
@@ -92,9 +91,9 @@ def main():
     
     # Check get the compatable ones
     sets = sortDates(filesList) # This sorting works
-    print("Sorted list") 
-    for d in sets:
-        print(d)
+#    print("Sorted list") 
+#    for d in sets:
+#        print(d)
 
     # Since they are zip have to extract them
     # Adjust later for temporary files
@@ -113,10 +112,10 @@ def main():
     os.chdir("Output\\0")
     baseFiles = printFiles(".", "*") # What comparing everything to
     baseHash = []
-    print(os.path.abspath(baseFiles[0]))
+#    print(os.path.abspath(baseFiles[0]))
     for b in baseFiles: # For directory 0
         baseHash.append(md5_a_file(b))
-        print(md5_a_file(b))
+#        print(md5_a_file(b))
 
     for i in range(1, len(sets) , 1):
         os.chdir("..\\" + str(i))
@@ -124,13 +123,22 @@ def main():
         changeHash = []
         for c in changeFiles: # The new directory
             changeHash.append(md5_a_file(c))
-            print(md5_a_file(c))
+#            print(md5_a_file(c))
         A,B = selectionSort(changeFiles, changeHash)
-        print ("Sorted array") 
-        for i in range(len(A)): 
-            print(A[i])
-            print(B[i])
+#        print ("Sorted array") 
+        for i in range(len(A)):
+#            print(A[i]) # Filename
+#            print(B[i]) # Hashnames
+            if B[i] in baseHash: # Hash Exist
+                print(A[i] + " Already has been found")
+            else:
+                print(A[i] + " is a new file")
+                baseFiles.append(A[i])
+                baseHash.append(B[i])
 
+    print("Total Files")
+    for i in range(len(baseFiles)):
+        print(baseFiles[i])
 
 main()
 
