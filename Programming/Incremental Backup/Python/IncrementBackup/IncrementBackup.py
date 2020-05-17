@@ -4,6 +4,9 @@ import fnmatch
 import hashlib
 import sys
 
+from os import listdir
+from os.path import isfile, join
+
 # Different way to extract zip files
 def f1(fn, dest):
     with open(fn, 'rb') as f:
@@ -32,6 +35,10 @@ def md5_a_file(filePath, block_size=128 * 16):
     
     return md5.hexdigest()
 
+
+
+
+
 def printFiles(folderpath, pattern):
     x = []
     listOfFiles = os.listdir(folderpath)
@@ -44,17 +51,18 @@ def printFiles(folderpath, pattern):
 def sortDates(x):
     fin = []
     i = 0
-    fileName = x[0].rfind(" ")
-    while len(x) is not 0:
+    fileName = x[0].rfind(" ") + 1
+#    print(fileName)
+    while len(x) != 0:
         min = x[0]
-        minTime = min.split("-")
+        minTime = min[fileName:].split("-")
         for d in x:
-            tx = d.split("-")
+            tx = d[fileName:].split("-")
 #            print(tx)
 
         # Can simplify by to say months and days
             if int(tx[2][:-4]) <= int(minTime[2][:-4]): # TX month is earlier or same as minimum
-                if int(tx[0][fileName:]) <= int(minTime[0][fileName:]): # TX month is earlier or same as minimum
+                if int(tx[0]) <= int(minTime[0]): # TX month is earlier or same as minimum
                     if int(tx[1]) < int(minTime[1]): # Tx day is earlier than minimum
                         min = d
 #                        print("made it here setting" + min + " as the
@@ -78,6 +86,7 @@ def selectionSort(array1, array2): # Filename, Hashname
         array2[i], array2[min_idx] = array2[min_idx], array2[i] 
     return array1, array2
 
+def getFiles(fp): # Files Path
 
 
 
@@ -109,8 +118,9 @@ def main():
     # Compare all of them to the folder 0
     # First need md5 of all the files
     os.chdir("Output\\0")
-    baseFiles = printFiles(".", "*") # What comparing everything to
+    baseFiles = getFiles(".") # What comparing everything to
     baseHash = []
+
 #    print(os.path.abspath(baseFiles[0]))
     for b in baseFiles: # For directory 0
         baseHash.append(md5_a_file(b))
@@ -129,7 +139,8 @@ def main():
 #            print(A[i]) # Filename
 #            print(B[i]) # Hashnames
             if B[i] in baseHash: # Hash Exist
-                print(A[i] + " Already has been found")
+                xp = A[i]
+#                print(A[i] + " Already has been found")
             else:
                 print(A[i] + " is a new file")
                 baseFiles.append(A[i])
