@@ -69,15 +69,16 @@ def sortDates(x):
 def selectionSort(array1, array2): # Filename, Hashname
     A = [64, 25, 12, 22, 11] 
     # Traverse through all array elements 
-    for i in range(len(A)): 
+    for i in range(len(array2)): 
         # Find the minimum element in remaining unsorted array 
         min_idx = i 
-        for j in range(i+1, len(A)): 
-            if A[min_idx] > A[j]: 
+        for j in range(i+1, len(array2)): 
+            if array2[min_idx] > array2[j]: 
                 min_idx = j 
         # Swap the found minimum element with the first element		 
-        A[i], A[min_idx] = A[min_idx], A[i] 
-    return A
+        array1[i], array1[min_idx] = array1[min_idx], array1[i] 
+        array2[i], array2[min_idx] = array2[min_idx], array2[i] 
+    return array2, array1
 
 
 
@@ -124,10 +125,11 @@ def main():
         for c in changeFiles: # The new directory
             changeHash.append(md5_a_file(c))
             print(md5_a_file(c))
-        A = selectionSort(changeFiles, changeHash)
+        A,B = selectionSort(changeFiles, changeHash)
         print ("Sorted array") 
         for i in range(len(A)): 
-            print("%d" %A[i])
+            print(A[i])
+            print(B[i])
 
 
 main()
