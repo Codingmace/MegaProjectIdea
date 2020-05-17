@@ -3,26 +3,8 @@ import os
 import fnmatch
 import hashlib
 import sys
-
-from os import listdir
-from os.path import isfile, join
-
-# Different way to extract zip files
-def f1(fn, dest):
-	with open(fn, 'rb') as f:
-		zf = zipfile.ZipFile(f)
-		zf.extractall(dest)
-
-	total = 0
-	for root, dirs, files in os.walk(dest):
-		for file_ in files:
-			fn = os.path.join(root, file_)
-			total += _count_file(fn)
-	return total
-
-# URL TO CHECK
-# https://docs.python.org/3/library/zipfile.html
-# https://www.peterbe.com/plog/fastest-way-to-unzip-a-zip-file-in-python
+# from os import listdir
+# from os.path import isfile, join
 
 def md5_a_file(filePath, block_size=128 * 16):
 	md5 = hashlib.md5()
@@ -32,7 +14,6 @@ def md5_a_file(filePath, block_size=128 * 16):
 		if not data:
 			break
 		md5.update(data)
-	
 	return md5.hexdigest()
 
 
@@ -64,7 +45,6 @@ def sortDates(x):
 		x.remove(min) # Remove minimum
 	return fin
 
-
 def selectionSort(array1, array2): # Filename, Hashname
 	# Traverse through all array elements 
 	for i in range(len(array2)): 
@@ -77,6 +57,7 @@ def selectionSort(array1, array2): # Filename, Hashname
 		array1[i], array1[min_idx] = array1[min_idx], array1[i] 
 		array2[i], array2[min_idx] = array2[min_idx], array2[i] 
 	return array1, array2
+
 
 def getFiles(fp): # Files Path
 	print("I GOT FILES")
