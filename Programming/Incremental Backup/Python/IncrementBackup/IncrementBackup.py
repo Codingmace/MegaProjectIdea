@@ -3,7 +3,6 @@ import os
 import fnmatch
 import hashlib
 import sys
-# from numpy import array
 
 # Different way to extract zip files
 def f1(fn, dest):
