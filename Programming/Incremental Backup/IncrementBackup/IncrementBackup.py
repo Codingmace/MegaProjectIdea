@@ -58,10 +58,24 @@ def selectionSort(array1, array2): # Filename, Hashname
 		array2[i], array2[min_idx] = array2[min_idx], array2[i] 
 	return array1, array2
 
-
 def getFiles(fp): # Files Path
+	x = []
+	y = os.listdir()
+	while len(y) > 0:
+		cur = y[0]
+		print(cur)
+		print(y)
+		if os.path.isdir(cur):
+			tmp = os.listdir(cur)
+			for t in tmp:
+				y.append(t)
+#			y.append(os.listdir(cur))
+		elif os.path.isfile(cur):
+			x.append(cur)
+		y.remove(cur)
+#	print(y[0])
 	print("I GOT FILES")
-
+	return dir
 
 def main():
 	workspace = "TestData"
@@ -82,14 +96,15 @@ def main():
 		if not os.path.exists(dirName):
 			os.mkdir(dirName)
 			print("Directory " , dirName ,  " Created ")
+			zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 		else:
 			print("Directory " , dirName ,  " already exists")
-		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
+#		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 				
 	# Compare all of them to the folder 0
 	# First need md5 of all the files
 	os.chdir("Output\\0")
-	baseFiles = getFiles(".") # What comparing everything to
+	baseFiles = getFiles("..") # What comparing everything to
 	baseHash = []
 #    print(os.path.abspath(baseFiles[0]))
 	for b in baseFiles: # For directory 0
