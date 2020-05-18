@@ -1,6 +1,6 @@
 package Chess;
 
-import java.net.*;
+import java.net.Socket;
 
 class Network implements Runnable {
 

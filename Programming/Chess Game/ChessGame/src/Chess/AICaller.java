@@ -48,26 +48,26 @@ public class AICaller extends Thread {
         }
         bRunning = true;
 
-        while (!chess.main.bQuit && bRunning) {
+        while (!Chess.main.bQuit && bRunning) {
             if (bStart) {
                 bStart = false;
 
-                chess.bThinking = true;
+                Chess.bThinking = true;
 
-                chess.main.difficultySlider.setEnabled(false);
-                chess.main.chk_IterativeDeep.setEnabled(false);
-                chess.main.butt_SetupBoard.setEnabled(false);
-                chess.main.menu_Game_SetPosition.setEnabled(false);
+                Chess.main.difficultySlider.setEnabled(false);
+                Chess.main.chk_IterativeDeep.setEnabled(false);
+                Chess.main.butt_SetupBoard.setEnabled(false);
+                Chess.main.menu_Game_SetPosition.setEnabled(false);
 
-                ChessPosition n = chess.playGame(chess.pos, chess.PROGRAM);
-                if (chess.bThinking) {
-                    chess.bThinking = false; // consider removing the bRunning?
-                    chess.pos = n;
+                ChessPosition n = chess.playGame(Chess.pos, Chess.PROGRAM);
+                if (Chess.bThinking) {
+                    Chess.bThinking = false; // consider removing the bRunning?
+                    Chess.pos = n;
                 }
-                chess.main.difficultySlider.setEnabled(true);
-                chess.main.chk_IterativeDeep.setEnabled(true);
-                chess.main.butt_SetupBoard.setEnabled(true);
-                chess.main.menu_Game_SetPosition.setEnabled(true);
+                Chess.main.difficultySlider.setEnabled(true);
+                Chess.main.chk_IterativeDeep.setEnabled(true);
+                Chess.main.butt_SetupBoard.setEnabled(true);
+                Chess.main.menu_Game_SetPosition.setEnabled(true);
             }
 
             try {
@@ -75,10 +75,7 @@ public class AICaller extends Thread {
             } catch (InterruptedException ex) {
                 System.out.println("AICaller Thread Sleep Error");
             }
-
         }
-
         bRunning = false;
-
     }
 }

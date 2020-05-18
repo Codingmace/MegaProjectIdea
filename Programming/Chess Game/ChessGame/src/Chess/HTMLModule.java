@@ -1,12 +1,17 @@
 package Chess;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.html.*;
-
-import java.awt.*;
-import java.io.*;
-import java.net.*;
+import java.awt.BorderLayout;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 public class HTMLModule {
 
@@ -14,6 +19,7 @@ public class HTMLModule {
 
     /**
      * HtmlModule Constructor
+     *
      * @param panel
      * @param path
      */

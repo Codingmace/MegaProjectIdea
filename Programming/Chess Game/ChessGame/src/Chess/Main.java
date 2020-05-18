@@ -3,13 +3,15 @@ package Chess;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.TimerTask;
+import java.util.Vector;
 
 import javax.swing.table.*;
 import javax.swing.*;
-import java.util.*;
 import javax.swing.event.*;
 
 import javax.swing.JTable;

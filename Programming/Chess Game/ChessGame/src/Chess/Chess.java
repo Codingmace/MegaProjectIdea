@@ -1,6 +1,7 @@
 package Chess;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Stack;
 
 public class Chess {
 
@@ -382,108 +383,18 @@ public class Chess {
         return beta;
     }
 
-    /*
-	protected Vector alphaBetaHelper(int depth, ChessPosition p, boolean player, float alpha, float beta)
-	{
-
-		float value;
-		if ( reachedMaxDepth( p, depth - localMaxima) ) // Test if we have reached our maximum depth and cut-off here
-		{
-			Vector v = new Vector(2);
-
-			v.addElement(new Float(positionEvaluation(p, player)));
-			v.addElement(null);
-
-			return v;
-		}
-
-		if ( depth > reachedDepth )
-			reachedDepth = depth;
-
-		++nodeCount; // A counter for the amount of positions we have searched.
-
-		Vector best = new Vector(); // Contains a list of the best moves so far
-
-		int num = calcPossibleMoves(p, player);
-
-		if ( num == 0 )
-		{
-			System.out.println("Stalemate");
-		}
-
-		ChessMove [] chessMove = new ChessMove[num];
-		for ( int nMoves = 0; nMoves < num; nMoves++)
-		{
-			chessMove[nMoves] = new ChessMove( possibleMoveList[nMoves] );
-		}
-
-		ChessPosition [] chessPos = new ChessPosition[num];
-
-	//	int localMaxima;
-
-		for ( int i = 0; i < num; i++ ) // Iterate through moves and recursively call self
-		{
-			chessPos[i] = new ChessPosition( p );
-
-			// If we are taking a piece, make sure to search ahead so that it's not bogus!
-			if ( chessMove[i].to != 0 )
-				localMaxima = 1;
-
-			chessPos[i].makeMove ( chessMove[i] );
-
-			Vector v2 = alphaBetaHelper(depth + 1, chessPos[i], !player, -beta, -alpha);
-
-			if ( localMaxima != 0 )
-				localMaxima = 0;
-
-			value = -((Float)v2.elementAt(0)).floatValue();
-
-			if ( value > beta )
-			{
-				beta = value;
-				best = new Vector();
-				best.addElement(chessMove[i]);
-
-				Enumeration enum = v2.elements();
-
-				enum.nextElement(); // skip first value
-
-				while ( enum.hasMoreElements() )
-				{
-					Object o = enum.nextElement();
-					if ( o != null )
-						best.addElement(o);
-				}
-			}
-
-			// Alpha-beta Cut-off point, decreases search time by not expanding "bad" moves
-			if (beta >= alpha)
-				break;
-
-		}
-
-		Vector v3 = new Vector();
-
-		v3.addElement( new Float(beta) );
-
-		Enumeration enum = best.elements();
-
-		while ( enum.hasMoreElements() )
-		{
-			v3.addElement( enum.nextElement() );
-		}
-
-		return v3;
-	}
-     */
+ 
     /**
-     * A temporary varialbe used to display the score in the info panel and to
+     * A temporary variable used to display the score in the info panel and to
      * draw the score graph.
      */
     public static float bestMoveEval; // used for display purposes
 
     /**
      * Invokes AI Move Computation. Calculates the best move and makes it.
+     * @param startingPosition
+     * @param bAsPlayer
+     * @return 
      */
     public ChessPosition playGame(ChessPosition startingPosition, boolean bAsPlayer) {
         // Let's clear the principal variation
@@ -528,9 +439,7 @@ public class Chess {
             }
             break;
         }
-
         return startingPosition;
-
     }
 
     /**
@@ -546,6 +455,9 @@ public class Chess {
      * setControlData function to determine board control. This control value is
      * adjusted and added to the evaluation value, before it is returned to the
      * caller, alphaBetaHelper.
+     * @param p
+     * @param player
+     * @return 
      */
     public float positionEvaluation(ChessPosition p, boolean player) {
         ChessPosition pos = p;

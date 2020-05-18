@@ -1,8 +1,13 @@
 package Chess;
 
-import java.awt.*;
 
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.GridLayout;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 class Database {
 
