@@ -32,7 +32,6 @@ public class AICaller extends Thread {
 
     public AICaller(Chess chess) {
         this.chess = chess;
-        //Thread.currentThread().setPriority(MAX_PRIORITY);
     }
 
     /**

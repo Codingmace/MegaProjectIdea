@@ -554,24 +554,23 @@ public class Chess {
             case 0:
             case 7:
                 break;
-
+                
             case ChessPosition.PAWN: {
                 // Check if pawn can take left
                 move_offset = square_index + (side_index * 10) + 1;
                 if (move_offset >= 0 && move_offset < 80) {
                     target = b[move_offset];
 
-                    if ((piece > 0 && target < 0 && target != 7)
-                            || (piece < 0 && target > 0 && target != 7)) {
+                    if ((piece > 0 && target < 0 && target != 7)|| (piece < 0 && target > 0 && target != 7)) {
                         piece_moves[count++] = move_offset;
                         control[move_offset] += 12;
 
                         /**
                          * Is the pawn checking the player?
                          */
-                        if (target == pos.KING) {
+                        if (target == ChessPosition.KING) {
                             pos.bWhiteChecked = true;
-                        } else if (target == -pos.KING) {
+                        } else if (target == -ChessPosition.KING) {
                             pos.bBlackChecked = true;
                         }
                     }
@@ -590,9 +589,9 @@ public class Chess {
                         /**
                          * Is the pawn checking the player?
                          */
-                        if (target == pos.KING) {
+                        if (target == ChessPosition.KING) {
                             pos.bWhiteChecked = true;
-                        } else if (target == -pos.KING) {
+                        } else if (target == -ChessPosition.KING) {
                             pos.bBlackChecked = true;
                         }
                     }
@@ -661,9 +660,9 @@ public class Chess {
                         /**
                          * Is the opponent in check?
                          */
-                        if (target == pos.KING) {
+                        if (target == ChessPosition.KING) {
                             pos.bWhiteChecked = true;
-                        } else if (target == -pos.KING) {
+                        } else if (target == -ChessPosition.KING) {
                             pos.bBlackChecked = true;
                         }
 
@@ -760,12 +759,6 @@ public class Chess {
             }
         }
 
-        /**
-         * Now that we have generated all possible moves, sort the moves. We
-         * will put captures first.
-         */
-        //if ( count > 0 )
-        //	Arrays.sort( possibleMoveList, possibleMoveList[0] );
         return count + nPossibleCaptures;
     }
 
@@ -784,7 +777,8 @@ public class Chess {
     }
 
     /**
-     * Calles NewGame() and initialises the temoporary piece move lists.
+     * Calls NewGame() and initialises the temporary piece move lists.
+     * @param main
      */
     public Chess(Main main) {
         // Allocate temporary possibleMoveList for AI iteration
@@ -802,7 +796,7 @@ public class Chess {
             principalVariation[i] = new ChessMove();
         }
 
-        this.main = main;
+        Chess.main = main;
         NewGame();
     }
 
@@ -1004,6 +998,8 @@ public class Chess {
     /**
      * Takes a ChessPosition class and encodes it as a string for easy storing
      * in database.
+     * @param p
+     * @return 
      */
     public static String encodePosition(ChessPosition p) {
         String str = new String();

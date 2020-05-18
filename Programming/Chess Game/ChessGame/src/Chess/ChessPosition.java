@@ -14,12 +14,12 @@ public class ChessPosition {
      * An array of board squares.
      */
     public int[] board = new int[80];
+    
     /**
      * Stores the index of pieces on the board. Exists for faster move
      * generation.
      */
-    //   public Vector pieces = new Vector();
-
+    
     boolean bWhiteKingMoved = false;
     boolean bBlackKingMoved = false;
 
@@ -34,13 +34,6 @@ public class ChessPosition {
      * @param move
      */
     public void makeMove(ChessMove move) {
-        /* 	pieces.remove(move.from);
-    	if ( !pieces.contains( new Integer(move.to) ) )
-    		pieces.add( new Integer(move.to) );
-
-		pieces.set( pieces.indexOf( new Integer(move.from)) , new Integer(move.to) );
-         */
-
         board[move.to] = board[move.from];
         board[move.from] = 0;
 
@@ -59,23 +52,7 @@ public class ChessPosition {
         }
     }
 
-    /**
-     * FindPieces() scans the board array and saves the pieces to the pieces
-     * vector, after clearing it.
-     */
-    /*	public Vector FindPieces()
- 	{
- 		pieces.clear();
- 		for ( int y = 0; y < 8; y++ )
- 			for ( int x = 0; x < 8; x++ )
- 			{
- 				int i = y*10+x;
- 				if ( board[i] != 0 )
- 					pieces.add( new Integer(i) );
- 			}
- 		return pieces;
- 	}*/
-    
+   
     /**
      * Instantiates the board position by mirroring another board position. Used
      * extensively during alpha-beta search.
