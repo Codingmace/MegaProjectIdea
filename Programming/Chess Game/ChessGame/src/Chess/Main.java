@@ -3,13 +3,14 @@ package Chess;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.table.*;
 import javax.swing.*;
 import java.util.*;
-import java.io.File;
 import javax.swing.event.*;
-import java.sql.*;
 
 import javax.swing.JTable;
 
@@ -18,7 +19,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     /**
      * Our version counter
      */
-    final public static String VERSION = "1.3";
+    final public static String VERSION = "1.4";
 
     /**
      * The omni-present Chess reference, used nearly everywhere for calculations
@@ -35,6 +36,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * Stores the width to which Chessmate should size its window.
      */
     public static final int WINDOW_WIDTH = 500 + 220;
+
     /**
      * Stores the height to which Chessmate should size its window.
      */
@@ -44,6 +46,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * The width of a chess board square, drawn as either light or dark.
      */
     public static final char TILE_WIDTH = 50;
+
     /**
      * The height of a chess board square, drawn as either light or dark.
      */
@@ -53,6 +56,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * The width of the chess board, used for drawing calculations.
      */
     public static final int BOARD_WIDTH = TILE_WIDTH * 8;
+    
     /**
      * The height of the chess board, used for drawing calculations.
      */
@@ -103,12 +107,13 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     /**
      * Our right-aligned tab which keeps all our game information.
      */
-    private JTabbedPane tabbedPane;
+    private final JTabbedPane tabbedPane;
 
     /**
      * A graph showing an AI interpretation of who's winning.
      */
     public Graph graph = new Graph();
+
     /**
      * A scroll accompanying the Graph class
      *
@@ -119,7 +124,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     /**
      * A difficulty slider for adjusting AI search depth
      */
-    JSlider difficultySlider = new JSlider(1, 6, chess.maxDepth);
+    JSlider difficultySlider = new JSlider(1, 6, Chess.maxDepth);
 
     /**
      * A list of moves by the players to be displayed in a table.
@@ -133,6 +138,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * An abstract table model for rendering the moves list.
      */
     TableModel moveTable_dataModel = new AbstractTableModel() {
+        @Override
         public int getColumnCount() {
             return 3;
         }
@@ -144,10 +150,11 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             return moveList.size() / 2 + moveList.size() % 2;
         }
 
+        @Override
         public Object getValueAt(int row, int col) {
             if (moveList.size() > 0) {
                 if (col == 0) {
-                    Integer r = new Integer(row + 1);
+                    Integer r = row + 1;
                     return (Object) r;
                 }
 
@@ -159,15 +166,17 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                     return moveList.get(i);
                 }
             }
-            return new String();
+            return "";
         }
     };
+    
     /**
      * A table for drawing the moves stored in moveList.
      *
      * @see moveList
      */
     JTable moveTable = new JTable(moveTable_dataModel);
+    
     /**
      * A scroll pane accompanying the moves table.
      *
@@ -248,6 +257,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * player.
      */
     static int hoverPiece = 0;
+    
     /**
      * Stores the most recent mouse coordinates. Used by drawing routines.
      */
@@ -287,6 +297,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * An image holding the strip of black and white pieces.
      */
     static Image strip; // the image strip
+    
     /**
      * An array of images holding the piece images extracted from the image
      * strip. Used by drawing routines.
@@ -328,6 +339,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
     /**
      * Alert Displays a dialog containing useful information.
+     * @param title
+     * @param message
      */
     public void alert(String title, String message) {
         String[] SaveOptionNames = {"Continue"};
@@ -342,6 +355,11 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * Extract the constituent images from a strip. There are num_images to
      * extract, each with the specified width and height.
      *
+     * @param strip
+     * @param images
+     * @param num_images
+     * @param width
+     * @param height
      */
     public void extractImages(Image strip, Image images[], int num_images, int width, int height) {
         ImageProducer source = strip.getSource();
@@ -409,23 +427,21 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
     public void playerMoved(boolean player, ChessMove move) {
         // test to enable en-passant
-        if (chess.pos.board[move.from] == (player ? ChessPosition.PAWN : -ChessPosition.PAWN)) {
+        if (Chess.pos.board[move.from] == (player ? ChessPosition.PAWN : -ChessPosition.PAWN)) {
             int offset = move.to - move.from;
             if (offset < 0) {
                 offset = -offset;
             }
-            if (offset == 20) // i.e. moved two square
-            {
-                chess.pos.enPassantSquare = move.to;
-                //System.out.println("En-passant option detected.");
+            if (offset == 20) { // i.e. moved two square
+                Chess.pos.enPassantSquare = move.to;
             }
         } else {
-            chess.pos.enPassantSquare = 0;
+            Chess.pos.enPassantSquare = 0;
         }
 
         // adding previous position to the board history
-        ChessPosition p = new ChessPosition(chess.pos);
-        chess.boardHistory.push(p);
+        ChessPosition p = new ChessPosition(Chess.pos);
+        Chess.boardHistory.push(p);
 
         ChessPosition checkPos = new ChessPosition(p);
 
@@ -438,8 +454,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
          * Do some checkmate testing
          */
         if (!bSetPosition) {
-            if (player == chess.BLACK && checkPos.bBlackChecked) {
-                chess.bThinking = false;
+            if (player == Chess.BLACK && checkPos.bBlackChecked) {
+                Chess.bThinking = false;
                 alert("Checkmate", "Black is checkmated.");
             } else if (player == chess.WHITE && checkPos.bWhiteChecked) {
                 chess.bThinking = false;
@@ -450,21 +466,21 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         lastMove = move;
 
         // add the move to our move list
-        moveList.add(new String(move.toString()));
+        moveList.add(move.toString());
         moveTable_scrollPane.getViewport().updateUI();
 
         moveTime = 0;
 
         if (player == Chess.PROGRAM) {
-            graph.data.add(new Float(chess.bestMoveEval));
+            Graph.data.add(Chess.bestMoveEval);
             graph.repaint();
         }
-        if (chess.bestMoveEval >= 1000.0f) {
-            field_Score.setText("Mate in " + (int) (chess.maxDepth - 1 - (int) (chess.bestMoveEval / 1000.0f) / 2));
-        } else if (chess.bestMoveEval <= -1000.0f) {
-            field_Score.setText("Mate in " + (int) (chess.maxDepth - 1 - (chess.bestMoveEval / -1000.0f) / 2));
+        if (Chess.bestMoveEval >= 1000.0f) {
+            field_Score.setText("Mate in " + (int) (Chess.maxDepth - 1 - (int) (Chess.bestMoveEval / 1000.0f) / 2));
+        } else if (Chess.bestMoveEval <= -1000.0f) {
+            field_Score.setText("Mate in " + (int) (Chess.maxDepth - 1 - (Chess.bestMoveEval / -1000.0f) / 2));
         } else {
-            field_Score.setText(new Float(chess.bestMoveEval).toString());
+            field_Score.setText(Float.toString(Chess.bestMoveEval));
         }
 
         chess.bWhoseTurn = !player;
@@ -490,6 +506,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         bRedraw = true;
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
@@ -497,11 +514,14 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * When the player releases his mouse, this function checks if it is his
      * turn and calculates the appropriate squares. Unless the board is being
      * set up, this function also starts the AI thread.
+     *
+     * @param e
      */
+    @Override
     public void mouseReleased(MouseEvent e) {
         while (true) // a dummy for easy error-checking
         {
-            if (hoverPiece > 0 && !chess.bThinking) {
+            if (hoverPiece > 0 && !Chess.bThinking) {
                 int x = e.getX() - HORZ_OFFSET; // - BOARD_HORZ_OFFSET;
                 int y = e.getY() - VERT_OFFSET; // - BOARD_VERT_OFFSET;
 
@@ -516,13 +536,13 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                         move.to = square;
 
                         if (bPlaying) {
-                            if (!chess.isValidMove(chess.pos, move)) {
+                            if (!chess.isValidMove(Chess.pos, move)) {
                                 break;
                             }
                         }
 
                         playerMoved(Chess.HUMAN, move);
-                        chess.pos.makeMove(move);
+                        Chess.pos.makeMove(move);
 
                         // This is the queue for the PC to start THINKING...
                         if (bPlaying) {
@@ -533,38 +553,36 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                 }
             }
             break;
-        };
+        }
 
         hoverPiece = 0;
-
         bRedraw = true;
     }
 
     /**
      * When the user clicks on the screen, this function checks whether he/she
      * has picked up a piece and stores it in hoverPiece.
+     *
+     * @param e
      */
+    @Override
     public void mousePressed(MouseEvent e) {
-        //int x = e.getX() - HORZ_OFFSET - BOARD_HORZ_OFFSET;
-        //int y = e.getY() - VERT_OFFSET - BOARD_VERT_OFFSET;
-
         int x = e.getX() - HORZ_OFFSET; // ..BOARD_HORZ_OFFSET;
         int y = e.getY() - VERT_OFFSET; // BOARD_VERT_OFFSET;
 
-        //System.out.printf("%d %d ", x, y);
         if (x <= BOARD_WIDTH && y <= BOARD_HEIGHT) {
             int square = calcSquare(x, y);
 
             if (square >= 0 && square <= 80) {
-                if (chess.pos.board[square] != ChessPosition.BLANK) {
+                if (Chess.pos.board[square] != ChessPosition.BLANK) {
                     //System.out.println("Pressed on square " + square);
-                    if (bSetPosition || (chess.HUMAN ? (chess.pos.board[square] > 0) : (chess.pos.board[square] < 0))) {
+                    if (bSetPosition || (Chess.HUMAN ? (Chess.pos.board[square] > 0) : (Chess.pos.board[square] < 0))) {
                         hoverPiece = square + 1;
                     } else {
                         hoverPiece = 0;
                     }
-                }// else
-            }				//	System.out.println("Square " + square + " is blank.");
+                }
+            }
         } else {
             hoverPiece = 0;
         }
@@ -573,16 +591,22 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     /**
      * This function detects changes to the AI search depth slider and adjusts
      * the AI search depth appropriately.
+     *
+     * @param e
      */
+    @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == difficultySlider) {
-            chess.maxDepth = difficultySlider.getValue();
+            Chess.maxDepth = difficultySlider.getValue();
         }
     }
 
     /**
      * All window messages arrive here, mainly menu and toolbar clicks.
+     *
+     * @param e
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
@@ -597,15 +621,15 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                 moveList.removeElementAt(moveList.size() - 1);
             }
 
-            if (chess.bThinking) {
-                chess.bThinking = false;
+            if (Chess.bThinking) {
+                Chess.bThinking = false;
             } else {
                 chess.Takeback();
                 if (moveList.size() > 0) {
                     moveList.removeElementAt(moveList.size() - 1);
                 }
-                if (graph.data.size() > 0) {
-                    graph.data.removeElementAt(graph.data.size() - 1);
+                if (Graph.data.size() > 0) {
+                    Graph.data.removeElementAt(Graph.data.size() - 1);
                 }
             }
             repaint();
@@ -644,23 +668,23 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         } else if (source == chk_SlowRedraws) {
             bSlowRedraws = ((JCheckBox) source).isSelected();
         } else if (source == radio_White) {
-            if (chess.bThinking) {
-                chess.bThinking = false;
+            if (Chess.bThinking) {
+                Chess.bThinking = false;
             }
-            chess.HUMAN = chess.WHITE;
-            chess.PROGRAM = chess.BLACK;
+            Chess.HUMAN = Chess.WHITE;
+            Chess.PROGRAM = Chess.BLACK;
             bFlipBoard = true;
-            if (chess.bWhoseTurn == chess.PROGRAM) {
+            if (chess.bWhoseTurn == Chess.PROGRAM) {
                 aiCaller.go();
             }
         } else if (source == radio_Black) {
-            if (chess.bThinking) {
-                chess.bThinking = false;
+            if (Chess.bThinking) {
+                Chess.bThinking = false;
             }
-            chess.HUMAN = chess.BLACK;
-            chess.PROGRAM = chess.WHITE;
+            Chess.HUMAN = Chess.BLACK;
+            Chess.PROGRAM = Chess.WHITE;
             bFlipBoard = false;
-            if (moveList.size() == 0 || chess.bWhoseTurn == chess.PROGRAM) {
+            if (moveList.isEmpty() || chess.bWhoseTurn == Chess.PROGRAM) {
                 aiCaller.go();
             }
         }
@@ -670,7 +694,10 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
     /**
      * Not used by Chessmate
+     *
+     * @param e
      */
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
@@ -678,7 +705,10 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * When the player has picked up a piece, and is moving around the mouse,
      * this function detects the movement and redraws the hovering piece
      * wherever it is.
+     *
+     * @param e
      */
+    @Override
     public void mouseDragged(MouseEvent e) {
         mouse_x = e.getX();
         mouse_y = e.getY();
@@ -689,12 +719,20 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
     /**
      * Stores the most recent mouse coordinates in mouse_x and mouse_y.
+     *
+     * @param e
      */
+    @Override
     public void mouseMoved(MouseEvent e) {
         mouse_x = e.getX();
         mouse_y = e.getY();
     }
 
+    /**
+     *
+     * @param e
+     */
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
@@ -705,25 +743,13 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      */
     public void LoadImages() {
         System.out.println("init() called");
-        String cwd = new File("").getAbsolutePath();
-        System.out.println(cwd);
-        System.out.println(new File("images/alpha.gif").getAbsolutePath());
         tracker = new MediaTracker(this);
-//		Image strip = getImage( getCodeBase(), "../images/alpha.gif" ); // applet stuff
         Image strip = Toolkit.getDefaultToolkit().getImage("images/alpha.gif");
         tracker.addImage(strip, 0);
         ++trackerCount;
-        
-        /* // Applet stuff
-		toolbarImages[0] = getImage( getCodeBase(), "../images/icon_new.gif" );
-		toolbarImages[1] = getImage( getCodeBase(), "../images/icon_loadgame.gif" );
-		toolbarImages[2] = getImage( getCodeBase(), "../images/icon_savegame.gif" );
-		toolbarImages[3] = getImage( getCodeBase(), "../images/icon_takeback.gif" );
-		toolbarImages[4] = getImage( getCodeBase(), "../images/icon_setupboard.gif" );
-		toolbarImages[5] = getImage( getCodeBase(), "../images/icon_help.gif" );
-         */
+
         toolbarImages[0] = Toolkit.getDefaultToolkit().getImage("images/icon_new.gif");
-       toolbarImages[1] = Toolkit.getDefaultToolkit().getImage("images/icon_loadgame.gif");
+        toolbarImages[1] = Toolkit.getDefaultToolkit().getImage("images/icon_loadgame.gif");
         toolbarImages[2] = Toolkit.getDefaultToolkit().getImage("images/icon_savegame.gif");
         toolbarImages[3] = Toolkit.getDefaultToolkit().getImage("images/icon_takeback.gif");
         toolbarImages[4] = Toolkit.getDefaultToolkit().getImage("images/icon_setupboard.gif");
@@ -731,10 +757,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         for (int i = 0; i < 6; i++) {
             tracker.addImage(toolbarImages[i], trackerCount++);
         }
-
-        //if ( strip == null )
-        //	System.out.println("Houston, we have a problem.");
-        // wait for images to load
         try {
             System.out.println("Loading images...");
             tracker.waitForAll();
@@ -746,7 +768,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         // Load Piece Images for Black & White from an image strip
         // define number of images in strip
         num_images = strip.getWidth(this) / piece_width;
-        System.out.println(num_images + " in strip");
 
         // define height of each image
         height = strip.getHeight(this);
@@ -767,13 +788,12 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             tracker.waitForAll();
         } catch (InterruptedException e) {
             System.out.println("There was an error loading a piece's image file.");
-            return;
         }
 
     }
 
     /**
-     * A class to hold a loadable game from the databse.
+     * A class to hold a loadable game from the database.
      */
     static class OldGame {
 
@@ -880,8 +900,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
         dlgButt_LoadGame.setBounds(0, 250, 200, 40);
         con.add(dlgButt_LoadGame);
-        dlgButt_LoadGame.addActionListener(
-                new ActionListener() {
+        dlgButt_LoadGame.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 int index = gameTable.getSelectedRow();
                 if (index == -1) {
@@ -892,15 +912,14 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
                 NewGame();
 
-                chess.main.setTitle(og.desc);
-                chess.pos = new ChessPosition(og.pos);
+                Chess.main.setTitle(og.desc);
+                Chess.pos = new ChessPosition(og.pos);
 
-                chess.bWhoseTurn = chess.HUMAN;
+                chess.bWhoseTurn = Chess.HUMAN;
 
                 dialog.dispose();
             }
-        }
-        );
+        });
 
         Button dlgButt_Delete = new Button("Delete");
         dlgButt_Delete.setBounds(200, 250, 200, 40);
@@ -1018,10 +1037,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         if (JOptionPane.showOptionDialog(this, savePanel, SaveTitle,
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, SaveOptionNames, SaveOptionNames[0]) == 0) {
-            String szPos = chess.encodePosition(chess.pos);
-
+            String szPos = Chess.encodePosition(Chess.pos);
             try {
-
                 System.out.println("Saving game...");
 
                 // check if we are over-riding an existing game
@@ -1030,16 +1047,11 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                 ResultSet rs = selPS.executeQuery();
 
                 PreparedStatement pstmt;
-                //PreparedStatement moveStmt;
 
                 if (rs.next()) {
                     System.out.println("Overriding old saved game...");
                     pstmt = db.dataBase.connection.prepareStatement("UPDATE Games SET Description=?,Position=? WHERE ID=?");
                     pstmt.setInt(3, rs.getInt("ID"));
-
-                    //moveStmt = db.dataBase.connection.prepareStatement("DELETE FROM Moves WHERE ID="+rs.getInt("ID"));
-//					moveStmt.setInt( 1, rs.getInt("ID") );
-                    //moveStmt.execute();
                 } else {
                     System.out.println("Saving new game...");
                     pstmt = db.dataBase.connection.prepareStatement("INSERT INTO Games (Description,Position) VALUES(?,?)");
@@ -1050,25 +1062,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
                 pstmt.execute();
 
-                /*	ChessMove saveMove;
-
-				for ( int i = 0; i < moveList.size(); i++ )
-				{
-					pstmt = db.dataBase.connection.prepareStatement("INSERT INTO Moves (Game,From,To) VALUES(?,?,?)");
-					pstmt.setString( 1, "SELECT FROM Games.ID WHERE Description='"+gameDescField.getText()+"'");
-					saveMove = (ChessMove)moveList.get(i);
-
-					pstmt.setInt( 2, saveMove.from );
-					pstmt.setInt( 3, saveMove.to );
-					pstmt.execute();
-				}*/
-
- /*	Enumeration e = moveList.elements();
-				while ( e.hasMoreElements() )
-				{
-					moveStmt = db.dataBase.connection.prepareStatement("INSERT INTO Moves (Game,MoveNum,Move) VALUES(?,?,?)");
-					//moveStmt.setInt(
-				}*/
             } catch (SQLException ex) {
                 System.out.println("Error saving game.");
                 System.out.println("SaveGame() : " + ex.toString());
@@ -1105,17 +1098,17 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      */
     public void NewGame() {
         lastMove = new ChessMove();
-        chess.bThinking = false;
+        Chess.bThinking = false;
 
         chess.NewGame();
 
         moveList.clear();
         moveTable.repaint();
 
-        graph.data.clear();
+        Graph.data.clear();
         graph.repaint();
 
-        if (chess.PROGRAM == chess.WHITE) {
+        if (Chess.PROGRAM == Chess.WHITE) {
             aiCaller.go();
         }
     }
@@ -1132,6 +1125,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         thisMain = this;
         addWindowListener(
                 new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
                 Exit();
             }
@@ -1258,12 +1252,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         gamePanel.setBackground(new Color(204, 204, 204));
         gamePanel.setBounds(0, 0, TAB_WIDTH, 400);
 
-        //	GridBagLayout gridLayout = new GridBagLayout();
-//		GridBagConstraints gc = new GridBagConstraints();//0,2,0,0);
-        //	gridLayout.setVgap(0);
-//		infoPanel = new Panel( new GridLayout(0,2,0,0) );
-//		infoPanel.setBackground( Color.lightGray );
-        //infoPanel.setBounds(50,0,200,400);
         JLabel label_Nodes = new JLabel("Nodes");
         JLabel label_NodesSecond = new JLabel("Nodes per second");
         JLabel label_Depth = new JLabel("Depth");
@@ -1406,7 +1394,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         gamePanel.add(radio_White);
         radioGroup.add(radio_White);
         radio_White.addActionListener(this);
-//		radioPanel.add( radio_White );
 
         // Add the Play as Black Radio button
         gc.anchor = GridBagConstraints.WEST;
@@ -1448,10 +1435,9 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
         gamePanel.add(difficultySlider);
 
-        tabbedPane.add(new String("Game"), gamePanel);
+        tabbedPane.add("Game", gamePanel);
 
         // Set-up and add a list of moves to hold players' moves to tabbed pane
-        // moveList = new java.awt.List();
         moveTable.getTableHeader().setReorderingAllowed(false);
 
         moveTable.getColumnModel().getColumn(0).setHeaderValue("#");
@@ -1499,45 +1485,32 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         repaint();
         tabbedPane.repaint();
 
-//		alert("Chessmate Welcome","Welcome to Chessmate " + VERSION + "!");
-        // Initiates the data source connection
         db = new Database(this);
 
         Thread mainThread;
         mainThread = new Thread(this);
         mainThread.start();
 
-        /**
-         * Redraw the screen at least every 25 ms
-         */
-        /*	timer.schedule( new TimerTask()
-	{
-		public void run()
-		{
-	 		if ( bRedraw )
-	 			repaint();
-		}
-	}, 0, 250 );*/
         timer.schedule(new TimerTask() {
             int nodesSecond = 0;
 
             public void run() {
-                if (!chess.bThinking || (bSlowRedraws && bVisualThinking)) {
+                if (!Chess.bThinking || (bSlowRedraws && bVisualThinking)) {
                     bRedraw = true;
                 }
 
-                if (chess.bThinking) {
+                if (Chess.bThinking) {
                     ++moveTime;	// since this function is called every second, just increment the move timer
 
-                    field_NodesSecond.setText("" + (chess.nodeCount - nodesSecond));
-                    nodesSecond = chess.nodeCount;
+                    field_NodesSecond.setText((Chess.nodeCount - nodesSecond) + "");
+                    nodesSecond = Chess.nodeCount;
 
-                    field_Nodes.setText("" + chess.nodeCount);
-                    field_Depth.setText(chess.maxDepth + "/" + chess.reachedDepth);
+                    field_Nodes.setText("" + Chess.nodeCount);
+                    field_Depth.setText(Chess.maxDepth + "/" + Chess.reachedDepth);
 
-                    tempString = new String();
-                    for (int i = 0; i < chess.reachedDepth; i++) {
-                        tempString += chess.principalVariation[i].toString() + " ";
+                    tempString = "";
+                    for (int i = 0; i < Chess.reachedDepth; i++) {
+                        tempString += Chess.principalVariation[i].toString() + " ";
                     }
 
                     field_Thinking.setText(tempString);
@@ -1550,11 +1523,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             }
         }, 0, 1000);
 
-        /*	if ( chess.PROGRAM == chess.WHITE )
-		{
-			aiCaller.go();
-			bFlipBoard = !bFlipBoard;
-		}*/
         NewGame();
     }
 
@@ -1563,8 +1531,10 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * Images are first rendered to an off-screen buffered before posted on the
      * screen.
      *
+     * @param g
      * @see offScreen
      */
+    @Override
     public void update(Graphics g) {
         Graphics gr;
         // Will hold the graphics context from the offScreen.
@@ -1590,7 +1560,10 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
     /**
      * Draws the board and repaints the TabbedPane so it doesn't stutter.
+     *
+     * @param g
      */
+    @Override
     public void paint(Graphics g) {
         drawPosition(g, BOARD_HORZ_OFFSET, BOARD_VERT_OFFSET);
 
@@ -1612,7 +1585,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     static Color colDarkRedSquare = new Color(107, 3, 3);
     static Color colLightRedSquare = new Color(240, 227, 212);
 
-    static ChessPosition paintPos = chess.pos;
+    static ChessPosition paintPos = Chess.pos;
 
     static boolean bBlueScreen = false; // is the visual thinking working
 
@@ -1633,19 +1606,19 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             lightColor = colLightRedSquare;
         }
 
-        if (chess.bThinking) {
+        if (Chess.bThinking) {
             if (bVisualThinking) {
                 bBlueScreen = true;
                 darkColor = colDarkGreySquare;
                 lightColor = colLightGreySquare;
-                paintPos = chess.workPos;
+                paintPos = Chess.workPos;
 
             } else {
-                paintPos = chess.pos;
+                paintPos = Chess.pos;
                 bBlueScreen = false;
             }
         } else {
-            paintPos = chess.pos;
+            paintPos = Chess.pos;
             bBlueScreen = false;
         }
 
@@ -1669,26 +1642,26 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                 //did the last move take place on this square?
                 if (bBlueScreen) // don't draw a last move if visual thinking enabled.
                 {
-                    if (chess.principalVariation[1].from != 0 && chess.principalVariation[1].to != 0) {
-                        if (chess.principalVariation[1].from == square) {
+                    if (Chess.principalVariation[1].from != 0 && Chess.principalVariation[1].to != 0) {
+                        if (Chess.principalVariation[1].from == square) {
                             g.setColor(Color.green);
                             g.drawRect(xPos, yPos, TILE_WIDTH - 1, TILE_HEIGHT - 1);
-                        } else if (chess.principalVariation[1].to == square) {
+                        } else if (Chess.principalVariation[1].to == square) {
                             g.setColor(Color.green);
                             g.drawRect(xPos, yPos, TILE_WIDTH - 1, TILE_HEIGHT - 1);
                         }
                     }
-                    if (chess.principalVariation[0].from != 0 && chess.principalVariation[0].to != 0) {
-                        if (chess.principalVariation[0].from == square) {
+                    if (Chess.principalVariation[0].from != 0 && Chess.principalVariation[0].to != 0) {
+                        if (Chess.principalVariation[0].from == square) {
                             g.setColor(Color.yellow);
                             g.drawRect(xPos, yPos, TILE_WIDTH - 1, TILE_HEIGHT - 1);
-                        } else if (chess.principalVariation[0].to == square) {
+                        } else if (Chess.principalVariation[0].to == square) {
                             g.setColor(Color.yellow);
                             g.drawRect(xPos, yPos, TILE_WIDTH - 1, TILE_HEIGHT - 1);
                         }
                     }
                 } else {
-                    if (lastMove.from != 0 && lastMove.to != 0) {
+                    if (lastMove.to != 0 && lastMove.from != 0) {
                         if (lastMove.from == square) {
                             g.setColor(Color.blue);
                             g.drawRect(xPos, yPos, TILE_WIDTH - 1, TILE_HEIGHT - 1);
@@ -1749,7 +1722,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
         JPanel panel = new JPanel(new BorderLayout());
 //		JEditorPane jep = new JEditorPane("text/html","http://localhost/FreshCode/index.html");
-//	con.add(jep);
 
         System.out.println(System.getProperty("user.dir"));
         htmlModule = new HTMLModule(panel, "../html/index.htm");//"../docs/html/index.html" );
@@ -1757,7 +1729,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         frame.setSize(700, 500);
 
         con.add(panel);//htmlModule.html );
-        //tabbedPane.add("brood",panel);
 
         frame.show();
 
@@ -1770,8 +1741,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      */
     int paintCount = 0;
 
+    @Override
     public void run() {
-        //Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
         while (!bQuit) {
             if (chess.bThinking && bVisualThinking && !bSlowRedraws) {
@@ -1787,24 +1758,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                 repaint();
                 bRedraw = false;
             }
-
-            /*		++timeTick;
-				if ( timeTick >= 20 )
-				{
-					timeTick = 0;
-					if ( !bRedraw )
-						repaint();
-
-					if ( chess.bThinking )
-					{
-						field_NodesSecond.setText("" + 2 * (chess.nodeCount - nodesSecond));
-						nodesSecond = chess.nodeCount;
-
-						field_Nodes.setText(""+chess.nodeCount);
-						field_Depth.setText(chess.maxDepth + "/" + chess.reachedDepth);
-					} else
-						nodesSecond = 0;
-				}*/
             try {
                 Thread.currentThread().sleep(25);
             } catch (java.lang.InterruptedException e) {
@@ -1816,6 +1769,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
     /**
      * Spawns a new Main class upon the application starting.
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -1823,5 +1777,4 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         System.out.println("Welcome to Chessmate v" + VERSION);
 
     }
-
 }

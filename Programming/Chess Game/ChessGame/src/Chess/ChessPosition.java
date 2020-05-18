@@ -1,8 +1,5 @@
 package Chess;
 
-import java.util.Vector;
-import java.util.Enumeration;
-
 public class ChessPosition {
 
     final static public int BLANK = 0;
@@ -34,6 +31,7 @@ public class ChessPosition {
     /**
      * Applies the given move parameter to the board position saved in this
      * instance of the class.
+     * @param move
      */
     public void makeMove(ChessMove move) {
         /* 	pieces.remove(move.from);
@@ -58,20 +56,7 @@ public class ChessPosition {
             bWhiteKingMoved = true;
         } else if (board[move.to] == -KING && !bBlackKingMoved) {
             bBlackKingMoved = true;
-        }// else
-/*		if ( enPassantSquare > 0 )
-		{
-			if ( board[ move.to ] == PAWN && move.to-10 == enPassantSquare )
-			{
-				board[move.to-10] = 0;
-				enPassantSquare = 0;
-			} else
-			if ( board[ move.to ] == -PAWN && move.to+10 == enPassantSquare )
-			{
-				board[move.to+10] = 0;
-				enPassantSquare = 0;
-			}
-		}*/
+        }
     }
 
     /**
@@ -90,9 +75,11 @@ public class ChessPosition {
  			}
  		return pieces;
  	}*/
+    
     /**
      * Instantiates the board position by mirroring another board position. Used
      * extensively during alpha-beta search.
+     * @param p
      */
     public ChessPosition(ChessPosition p) {
         System.arraycopy(p.board, 0, board, 0, 80);
@@ -103,14 +90,6 @@ public class ChessPosition {
         bWhiteChecked = p.bWhiteChecked;
         bBlackChecked = p.bBlackChecked;
 
-        /*		pieces = new Vector();
-
-		Enumeration e = p.pieces.elements();
-
-		while ( e.hasMoreElements() )
-		{
-			pieces.add( e.nextElement() );
-		}*/
     }
 
     /**

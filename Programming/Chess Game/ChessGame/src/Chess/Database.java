@@ -1,15 +1,8 @@
 package Chess;
 
 import java.awt.*;
-import java.sql.*;
-import java.awt.event.*;
-import java.util.*;
-import java.lang.*;
 
 import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.event.*;
-import javax.swing.border.*;
 
 class Database {
 

@@ -1,6 +1,9 @@
 package Chess;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Panel;
+import java.awt.Point;
 import java.util.Vector;
 
 /**
@@ -28,6 +31,7 @@ class Graph extends Panel {
     static int xSpacing = 10;
     static int tempSize = 0;
 
+    @Override
     public void paint(Graphics g) {
         g.setColor(Color.lightGray);
 
@@ -48,7 +52,7 @@ class Graph extends Panel {
 
         for (int i = tempSize; i != 0; --i) {
             Float f = (Float) data.get(tempSize - i);
-            fv = f.floatValue() * 2;
+            fv = f * 2;
             if (fv > 160) {
                 fv = 160.0f;
             } else if (fv < -160) {
@@ -57,7 +61,7 @@ class Graph extends Panel {
             cur.x = getWidth() / 2 - (int) (xSpacing * i);
             cur.y = (int) (getHeight() / 2 + fv);
 
-            if (f.floatValue() > 0) {
+            if (f > 0) {
                 g.setColor(Color.black);
             } else {
                 g.setColor(Color.white);

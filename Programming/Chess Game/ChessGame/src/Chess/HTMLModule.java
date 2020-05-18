@@ -2,19 +2,10 @@ package Chess;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.text.*;
 import javax.swing.text.html.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
-import javax.accessibility.*;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
 import java.io.*;
-import java.applet.*;
 import java.net.*;
 
 public class HTMLModule {
@@ -23,26 +14,20 @@ public class HTMLModule {
 
     /**
      * HtmlModule Constructor
+     * @param panel
+     * @param path
      */
     public HTMLModule(JPanel panel, String path) {
         System.out.println("HTMLModule ctor");
-        // String path = "";
         try {
             URL url = null;
-            // System.getProperty("user.dir") +
-            // System.getProperty("file.separator");
-///	    String path = null;
-
             try {
-                //	path = "index.html";//link;//"/resources/index.html";
                 url = getClass().getResource(path);
-                //url = new URL("http://localhost/freshcode/index.html");
                 if (url == null) {
                     System.out.println("problem");
                 }
             } catch (Exception e) {
                 System.out.println("Failed to open " + path);
-                //url = null;
             }
 
             if (url == null) {

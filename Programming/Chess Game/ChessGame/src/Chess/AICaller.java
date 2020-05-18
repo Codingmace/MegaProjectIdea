@@ -41,6 +41,7 @@ public class AICaller extends Thread {
      * so the application is not locked up. The thread will exit if
      * chess.bThinking is falsified.
      */
+    @Override
     public void run() {
         if (bRunning) {
             return;
