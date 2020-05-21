@@ -42,10 +42,7 @@ public class StartMenu implements Runnable {
         components.add(blackPanel, BorderLayout.EAST);
         final JLabel blackPiece = new JLabel();
         try {
-//            System.out.println(ImageIO.read(new File("resoures\\bp.png")));
-//            System.out.println(ImageIO.read(new File("resources/bp.png")));
             Image blackImg = ImageIO.read(new File("resources/bp.png"));
-//            Image blackImg = ImageIO.read(getClass().getResource("resources/bp.png"));
             blackPiece.setIcon(new ImageIcon(blackImg));
             blackPanel.add(blackPiece);
         } catch (IOException e) {

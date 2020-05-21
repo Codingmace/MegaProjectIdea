@@ -1,8 +1,9 @@
 
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 
-import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class Square extends JComponent {
