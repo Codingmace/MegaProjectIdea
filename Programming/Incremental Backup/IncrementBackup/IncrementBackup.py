@@ -6,6 +6,7 @@ import sys
 # from os import listdir
 # from os.path import isfile, join
 
+# MD5 a file based on chunks
 def md5_a_file(filePath, block_size=128 * 16):
 	md5 = hashlib.md5()
 	f = open(filePath, "rb")
@@ -24,11 +25,12 @@ def printFiles(folderpath, pattern):
 		if fnmatch.fnmatch(entry, pattern):
 			x.append(entry)
 	return x
-	
-def sortDates(x):
+
+# Sorts files based on the date instead of names (2-1-20 is before 2-10-20)
+def sortDates(x): 
 	fin = []
 	i = 0
-	fileName = x[0].rfind(" ") + 1
+	fileName = x[0].rfind(" ")
 	while len(x) != 0:
 		min = x[0]
 		minTime = min[fileName:].split("-")
@@ -40,11 +42,12 @@ def sortDates(x):
 				if int(tx[0]) <= int(minTime[0]): # TX month is earlier or same as minimum
 					if int(tx[1]) < int(minTime[1]): # Tx day is earlier than minimum
 						min = d
-						minTime = d.split("-")
+						minTime = d[fileName:].split("-")
 		fin.append(min) # Put minimum into array
 		x.remove(min) # Remove minimum
 	return fin
 
+# Sorting the array1 based on the numbers in array2
 def selectionSort(array1, array2): # Filename, Hashname
 	# Traverse through all array elements 
 	for i in range(len(array2)): 
@@ -57,6 +60,7 @@ def selectionSort(array1, array2): # Filename, Hashname
 		array1[i], array1[min_idx] = array1[min_idx], array1[i] 
 		array2[i], array2[min_idx] = array2[min_idx], array2[i] 
 	return array1, array2
+
 
 def getFiles(fp): # Files Path
 	x = []
@@ -74,8 +78,8 @@ def getFiles(fp): # Files Path
 			x.append(cur)
 		y.remove(cur)
 #	print(y[0])
-	print("I GOT FILES")
-	return dir
+#	print("I GOT FILES")
+	return x
 
 def main():
 	workspace = "TestData"
@@ -121,10 +125,13 @@ def main():
 #            print(A[i]) # Filename
 #            print(B[i]) # Hashnames
 			if B[i] in baseHash: # Hash Exist
+				print(os.path.abspath(A[i]))
 				xp = A[i]
+				print(os.path.abspath(A[i]) + " is the same as \n" + os.path.abspath(baseFiles[baseHash.index(B[i])]))
+#				print(baseHash.index(B[i]) + " Is the same as " + B[i])
 #                print(A[i] + " Already has been found")
-			else:
-				print(A[i] + " is a new file")
+			else: # Writes file because unique
+#				print(A[i] + " is a new file")
 				baseFiles.append(A[i])
 				baseHash.append(B[i])
 
