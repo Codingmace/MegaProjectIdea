@@ -46,7 +46,7 @@ class SingleLinkedList:
     def printList(self): # Prints Node values
         current_node = self.head        
         while current_node is not None:
-            print(current_node.data)            
+            print(current_node.data + " " + current_node.path)
             current_node = current_node.next
 
     def unordered_search (self, value): # Searches List for Node with data equal to value        
@@ -259,9 +259,9 @@ def main():
 #            print(A[i]) # Filename
 #            print(B[i]) # Hashnames
 			if B[i] in baseHash: # Hash Exist
-				print(os.path.abspath(A[i]))
+#				print(os.path.abspath(A[i]))
 				xp = A[i]
-				print(os.path.abspath(A[i]) + " is the same as \n" + os.path.abspath(baseFiles[baseHash.index(B[i])]))
+				print(os.path.abspath(A[i]) + " is the same as " + os.path.abspath(baseFiles[baseHash.index(B[i])]))
 #				print(baseHash.index(B[i]) + " Is the same as " + B[i])
 #                print(A[i] + " Already has been found")
 			else: # Writes file because unique
@@ -273,13 +273,12 @@ def main():
 	for i in range(len(baseFiles)):
 		print(baseFiles[i])
 
-	exampleLinkedList()
+#	exampleLinkedList()
 main()
 
 
 
 # ADJUSTMENT
-# Read all of the files and create one master list
 # Write the changes to be made file using code
 # Adjust the following files with the changes in files IE deleting
 # Files that are written to can add extension .abby and .jacob
