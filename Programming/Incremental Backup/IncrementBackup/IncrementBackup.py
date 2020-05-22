@@ -100,6 +100,8 @@ def printFiles(folderpath, pattern):
 	for entry in listOfFiles:
 		if fnmatch.fnmatch(entry, pattern):
 			x.append(entry)
+		if os.path.isdir(entry):
+			print("I FOUND IT")
 	return x
 
 # Sorts files based on the date instead of names (2-1-20 is before 2-10-20)
@@ -157,14 +159,16 @@ def printGrid(grid):
 
 def getFiles(fp): # Files Path
 	x = []
-	y = os.listdir()
+	y = os.listdir(fp)
 	while len(y) > 0:
 		cur = y[0]
 		if os.path.isdir(cur):
 			tmp = os.listdir(cur)
 			for t in tmp:
-				y.append(t)
+				y.append(cur +"\\" +  t)
 		elif os.path.isfile(cur):
+			x.append(cur)
+		else: # For files in folder
 			x.append(cur)
 		y.remove(cur)
 	return x
@@ -189,12 +193,14 @@ def main():
 			print("Directory " , dirName ,  " already exists")
 #		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 	grid = []
+	fileContent = [] # For what is going to be written to the file
 	os.chdir("Output\\0")
 	# Getting all the files set into nodes and stuff
 	for i in range(0, len(sets) , 1):
 		os.chdir("..\\" + str(i))
 		baseFiles = getFiles(".") # What comparing everything to
-		baseHash = []
+#		baseHash = []
+		fileContent.append("")
 		for b in baseFiles: # For directory 0
 			data = md5_a_file(b)
 			path = os.path.abspath(b)
