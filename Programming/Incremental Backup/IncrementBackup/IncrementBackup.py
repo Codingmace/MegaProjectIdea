@@ -6,10 +6,17 @@ import sys
 
 # Class for the nodes
 class ListNode:
-    def __init__(self, data):
+    def __init__(self, data, path):
         self.data = data # Set Data
         self.next = None # Set Reference (Following Node)
-    
+        self.path = path # Sets the path
+
+    def set_hash(self, value): # Sets the hash data
+        self.hash = value
+
+    def get_hash(self): # Returns hash
+        return self.hash
+
     def has_value(self, value): # Compares the value with node value
         return self.data == value
 
@@ -51,11 +58,13 @@ class SingleLinkedList:
         results = []
         while current_node is not None:
             if current_node.has_value(value):
-                results.append(node_id)
+                return node_id
+#                results.append(node_id)
             # jump to the linked node
             current_node = current_node.next
             node_id = node_id + 1
-        return results
+        return -1
+#        return results
 
     def remove_list_item_by_id(self, item_id): # Remove node with id for data
         current_id = 1
@@ -75,7 +84,6 @@ class SingleLinkedList:
             current_node = current_node.next
             current_id = current_id + 1
         return
-
 
 def exampleLinkedList():
 	# create four single nodes
@@ -103,7 +111,6 @@ def md5_a_file(filePath, block_size=128 * 16):
 			break
 		md5.update(data)
 	return md5.hexdigest()
-
 
 def printFiles(folderpath, pattern):
 	x = []
@@ -148,14 +155,31 @@ def selectionSort(array1, array2): # Filename, Hashname
 		array2[i], array2[min_idx] = array2[min_idx], array2[i] 
 	return array1, array2
 
+# Gets if a value is found in the list. If it is returns which index
+def linkedFind(lists, value):
+	count = 0
+	for a in lists:
+		if a== None:
+			return -1
+		c = a.unordered_search(value)
+		if c >= 0: # element exist
+			return count
+		else:
+			count+=1
+	return -1 # It was not found
+
+def printGrid(grid):
+	for u in grid:
+		u.printList()
+		print("")
 
 def getFiles(fp): # Files Path
 	x = []
 	y = os.listdir()
 	while len(y) > 0:
 		cur = y[0]
-		print(cur)
-		print(y)
+#		print(cur)
+#		print(y)
 		if os.path.isdir(cur):
 			tmp = os.listdir(cur)
 			for t in tmp:
@@ -191,15 +215,38 @@ def main():
 		else:
 			print("Directory " , dirName ,  " already exists")
 #		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
-				
+	grid = []
+#	grid.append(None)
+#	maping = SingleLinkedList()
 	# Compare all of them to the folder 0
 	# First need md5 of all the files
 	os.chdir("Output\\0")
-	baseFiles = getFiles("..") # What comparing everything to
-	baseHash = []
-#    print(os.path.abspath(baseFiles[0]))
-	for b in baseFiles: # For directory 0
-		baseHash.append(md5_a_file(b))
+	for i in range(0, len(sets) , 1):
+		os.chdir("..\\" + str(i))
+		baseFiles = getFiles(".") # What comparing everything to
+		baseHash = []
+	#    print(os.path.abspath(baseFiles[0]))
+		for b in baseFiles: # For directory 0
+			data = md5_a_file(b)
+			path = os.path.abspath(b)
+#			print(path)
+			print(data + " " + path)
+			q = ListNode(data, path)
+			itemIndex = linkedFind(grid, data)
+			if linkedFind(grid,data) >= 0: # It was found
+				grid[itemIndex].add_list_item(q)
+			else: # Adds the new item
+				qs = SingleLinkedList()
+				qs.add_list_item(q)
+				grid.append(qs)
+#				grid.append((SingleLinkedList().add_list_item(q)))
+#				grid[len(grid)-1].add_list_item(q)
+#				printGrid(grid)
+				# Traverse Back so that we can find the node
+	#		baseHash.append(md5_a_file(b))
+	printGrid(grid)
+#	for u in grid:
+#		u.printList()
 
 	for i in range(1, len(sets) , 1):
 		os.chdir("..\\" + str(i))
@@ -221,7 +268,7 @@ def main():
 #				print(A[i] + " is a new file")
 				baseFiles.append(A[i])
 				baseHash.append(B[i])
-
+				
 	print("Total Files")
 	for i in range(len(baseFiles)):
 		print(baseFiles[i])
