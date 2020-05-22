@@ -59,12 +59,10 @@ class SingleLinkedList:
         while current_node is not None:
             if current_node.has_value(value):
                 return node_id
-#                results.append(node_id)
             # jump to the linked node
             current_node = current_node.next
             node_id = node_id + 1
         return -1
-#        return results
 
     def remove_list_item_by_id(self, item_id): # Remove node with id for data
         current_id = 1
@@ -84,22 +82,6 @@ class SingleLinkedList:
             current_node = current_node.next
             current_id = current_id + 1
         return
-
-def exampleLinkedList():
-	# create four single nodes
-	node1 = ListNode(15)
-	node2 = ListNode(8.2)
-	item3 = "Berlin"
-	node4 = ListNode(15)
-
-	track = SingleLinkedList()
-	print("track length: %i" % track.list_length())
-
-	for current_item in [node1, node2, item3, node4]:
-		track.add_list_item(current_item)
-		print("track length: %i" % track.list_length())
-		track.printList()
-
 
 # MD5 a file based on chunks
 def md5_a_file(filePath, block_size=128 * 16):
@@ -178,31 +160,22 @@ def getFiles(fp): # Files Path
 	y = os.listdir()
 	while len(y) > 0:
 		cur = y[0]
-#		print(cur)
-#		print(y)
 		if os.path.isdir(cur):
 			tmp = os.listdir(cur)
 			for t in tmp:
 				y.append(t)
-#			y.append(os.listdir(cur))
 		elif os.path.isfile(cur):
 			x.append(cur)
 		y.remove(cur)
-#	print(y[0])
-#	print("I GOT FILES")
 	return x
 
 def main():
 	workspace = "TestData"
 	# os.chdir(workspace) # Created issues
 	filesList = printFiles('TestData', '*.zip') # Get valid zip files
-	# Need to adjust for multiple states of files
-												   # Example Files.zip and Itunes.zip
-	
-	# Check get the compatable ones
+	# Need to adjust for multiple states of files (Example Files.zip and iTunes.zip)
+
 	sets = sortDates(filesList) # This sorting works
-
-
 	# Since they are zip have to extract them
 	# Adjust later for temporary files
 	for i in range(0, len(sets) , 1):
@@ -216,20 +189,15 @@ def main():
 			print("Directory " , dirName ,  " already exists")
 #		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 	grid = []
-#	grid.append(None)
-#	maping = SingleLinkedList()
-	# Compare all of them to the folder 0
-	# First need md5 of all the files
 	os.chdir("Output\\0")
+	# Getting all the files set into nodes and stuff
 	for i in range(0, len(sets) , 1):
 		os.chdir("..\\" + str(i))
 		baseFiles = getFiles(".") # What comparing everything to
 		baseHash = []
-	#    print(os.path.abspath(baseFiles[0]))
 		for b in baseFiles: # For directory 0
 			data = md5_a_file(b)
 			path = os.path.abspath(b)
-#			print(path)
 			print(data + " " + path)
 			q = ListNode(data, path)
 			itemIndex = linkedFind(grid, data)
@@ -239,41 +207,16 @@ def main():
 				qs = SingleLinkedList()
 				qs.add_list_item(q)
 				grid.append(qs)
-#				grid.append((SingleLinkedList().add_list_item(q)))
-#				grid[len(grid)-1].add_list_item(q)
-#				printGrid(grid)
 				# Traverse Back so that we can find the node
-	#		baseHash.append(md5_a_file(b))
+	print(" Printing out the GRID ")
 	printGrid(grid)
-#	for u in grid:
-#		u.printList()
-
-	for i in range(1, len(sets) , 1):
-		os.chdir("..\\" + str(i))
-		changeFiles = printFiles(".", "*")
-		changeHash = []
-		for c in changeFiles: # The new directory
-			changeHash.append(md5_a_file(c))
-		A,B = selectionSort(changeFiles, changeHash)
-		for i in range(len(A)):
-#            print(A[i]) # Filename
-#            print(B[i]) # Hashnames
-			if B[i] in baseHash: # Hash Exist
-#				print(os.path.abspath(A[i]))
-				xp = A[i]
-				print(os.path.abspath(A[i]) + " is the same as " + os.path.abspath(baseFiles[baseHash.index(B[i])]))
-#				print(baseHash.index(B[i]) + " Is the same as " + B[i])
-#                print(A[i] + " Already has been found")
-			else: # Writes file because unique
-#				print(A[i] + " is a new file")
-				baseFiles.append(A[i])
-				baseHash.append(B[i])
-				
+	
 	print("Total Files")
 	for i in range(len(baseFiles)):
 		print(baseFiles[i])
-
-#	exampleLinkedList()
+	print("Original Files")
+	for u in grid:
+		print(u.head.path)
 main()
 
 
