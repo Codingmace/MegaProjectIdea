@@ -16,7 +16,7 @@ class ListNode:
         self.origin = "-" # File path based on
         self.dest = "-" # Destination path written to 
         self.delete = False # Last file so must be deleted 
-        self.copy = False # Was it copied
+#        self.copy = False # Was it copied
         self.shortPath = ""
         
     def set_hash(self, value): # Sets the hash data
@@ -32,10 +32,16 @@ class ListNode:
         self.shortPath = value
     def printNode(self):
         print("Original\tPath\t\tDelete\tCopy\tSource\t\tDestination")
+#        print("Original\tPath\t\tDelete\tSource\t\tDestination\t\t")
         print(("YES" if self.original else "NO") +"\t\t"+ self.shortPath,end="\t")
-        print(("YES" if self.delete else "NO") + "\t" + ("YES" if self.copy else "NO"), end="\t")
-        print(self.origin +"\t" +  self.dest) 
-        
+        print(("YES" if self.delete else "NO"), end="\t")
+#        print(("YES" if self.delete else "NO") + "\t" + ("YES" if self.copy else "NO"), end="\t")
+        print(self.origin +"\t" +  self.dest)
+#        print(self.origin +"\t" +  self.dest + "\tWORKS" + ("YES" if self.original != self.delete else "NO"))
+
+    def update(self):
+        self.delete = self.origin != self.dest and self.dest != "-"
+        self.original = self.dest == "-" and self.origin == "-"
         
 # The linked list
 class SingleLinkedList:
@@ -237,18 +243,18 @@ def main():
 	for g in grid:
 		# define current_node
 		current_node = g.head
-		current_node.original = True
-		originalFile = current_node.shortPath
-#			print(current_node.path)
-#		print(current_node.shortPath)
+#		current_node.original = True
+		current_node.update()
 		allFiles.append(current_node)
+		originalFile = current_node.shortPath
 		while current_node.next is not None:
 			current_node= current_node.next
 			current_node.origin = originalFile
-			current_node.original = False
+#			current_node.original = False
 			current_node.dest = current_node.shortPath
-			current_node.copy = True
-			current_node.delete = True
+#			current_node.copy = True
+#			current_node.delete = True
+			current_node.update()
 			allFiles.append(current_node)
 		
 		for af in allFiles:
