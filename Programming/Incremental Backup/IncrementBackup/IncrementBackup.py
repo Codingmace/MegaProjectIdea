@@ -123,7 +123,10 @@ def printFiles(folderpath, pattern):
 	for entry in listOfFiles:
 		if fnmatch.fnmatch(entry, pattern):
 			x.append(entry)
-		if os.path.isdir(entry):
+			print(zipfile.time)
+			q= zipfile.time
+			print(q.clock)
+		if os.path.isdir(entry): # This is if you have zip files further than target folder
 			print("I FOUND IT")
 	return x
 
@@ -214,7 +217,7 @@ def main():
 			zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 		else:
 			print("Directory " , dirName ,  " already exists")
-#		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
+#		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName) # Check to make sure it is not bigger than 4 gb
 	grid = []
 	allFiles=[] # all the list nodes of files
 	fileContent = [] # For what is going to be written to the file
@@ -273,11 +276,16 @@ def main():
 	for af in allFiles:
 		if af.delete:
 			print("removing the file at " + af.path)
+		if af.original:
+			print("Keeping the file at " + af.path)
 #			os.remove(af.path)
-# NEed to make sure it works first 
+# Need to make sure it works first 
 	
 	# Compress the files again
-
+	folder = "Ouput\\0"
+	with ZipFile('firstTest.zip', 'w') as myzip:
+		for pq in os.walk(folder):
+			myzip.write(pq.split(folder)[1])
 main()
 
 
