@@ -285,7 +285,15 @@ def main():
 		y = getFiles("..\\1")
 		for pq in y:
 			myzip.write(pq)
+#		myzip.write(folder + "\\changes.abby")
 #		myzip.write(folder + "\\a.txt")
+
+# Write the decompress functions
+# Write compression of the files using a binary tree and compressing the dots
+# Decompressing everything
+# A user interface that way it is easy to use
+# Test multiple times to make sure that it works
+
 main()
 
 
@@ -295,5 +303,4 @@ main()
 # Adjust the following files with the changes in files IE deleting
 # Files that are written to can add extension .abby and .jacob
 # Recompress the folders
-
 # Write a decompression function and how that will change
