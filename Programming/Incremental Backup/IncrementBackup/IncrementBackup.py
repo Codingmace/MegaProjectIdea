@@ -123,9 +123,6 @@ def printFiles(folderpath, pattern):
 	for entry in listOfFiles:
 		if fnmatch.fnmatch(entry, pattern):
 			x.append(entry)
-			print(zipfile.time)
-			q= zipfile.time
-			print(q.clock)
 		if os.path.isdir(entry): # This is if you have zip files further than target folder
 			print("I FOUND IT")
 	return x
@@ -283,9 +280,12 @@ def main():
 	
 	# Compress the files again
 	folder = "Ouput\\0"
-	with ZipFile('firstTest.zip', 'w') as myzip:
-		for pq in os.walk(folder):
-			myzip.write(pq.split(folder)[1])
+	print(os.path.abspath("."))
+	with zipfile.ZipFile('firstTest.zip', 'w') as myzip:
+		y = getFiles("..\\1")
+		for pq in y:
+			myzip.write(pq)
+#		myzip.write(folder + "\\a.txt")
 main()
 
 
