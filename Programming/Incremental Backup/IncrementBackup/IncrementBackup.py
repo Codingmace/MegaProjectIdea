@@ -6,11 +6,19 @@ import sys
 
 # Class for the nodes
 class ListNode:
-    def __init__(self, data, path):
+    def __init__(self, data, path,number):
         self.data = data # Set Data
         self.next = None # Set Reference (Following Node)
         self.path = path # Sets the path
-
+        self.foldNumb = number # Sets the archive count number
+        
+        self.original = True # Writting file or not
+        self.origin = "-" # File path based on
+        self.dest = "-" # Destination path written to 
+        self.delete = False # Last file so must be deleted 
+        self.copy = False # Was it copied
+        self.shortPath = ""
+        
     def set_hash(self, value): # Sets the hash data
         self.hash = value
 
@@ -19,6 +27,9 @@ class ListNode:
 
     def has_value(self, value): # Compares the value with node value
         return self.data == value
+    
+    def set_short(self, value): # Sets the shorter path name
+        self.shortPath = value
 
 # The linked list
 class SingleLinkedList:
@@ -165,10 +176,10 @@ def getFiles(fp): # Files Path
 		if os.path.isdir(cur):
 			tmp = os.listdir(cur)
 			for t in tmp:
-				y.append(cur +"\\" +  t)
+				y.append(cur +"\\" +  t) # Added for files in folder (cur)
 		elif os.path.isfile(cur):
 			x.append(cur)
-		else: # For files in folder
+		else: # For errors
 			x.append(cur)
 		y.remove(cur)
 	return x
@@ -199,13 +210,14 @@ def main():
 	for i in range(0, len(sets) , 1):
 		os.chdir("..\\" + str(i))
 		baseFiles = getFiles(".") # What comparing everything to
-#		baseHash = []
 		fileContent.append("")
 		for b in baseFiles: # For directory 0
 			data = md5_a_file(b)
 			path = os.path.abspath(b)
+			shortPath = "Output\\" + str(i) +"\\" + b
 			print(data + " " + path)
-			q = ListNode(data, path)
+			q = ListNode(data, path, i)
+			q.set_short(shortPath)
 			itemIndex = linkedFind(grid, data)
 			if linkedFind(grid,data) >= 0: # It was found
 				grid[itemIndex].add_list_item(q)
@@ -214,6 +226,24 @@ def main():
 				qs.add_list_item(q)
 				grid.append(qs)
 				# Traverse Back so that we can find the node
+
+	for g in grid:
+		# define current_node
+		current_node = g.head
+		current_node.original = True
+		originalFile = current_node.shortPath
+#			print(current_node.path)
+		print(current_node.shortPath)
+		while current_node is not None:
+			if current_node.next is None:
+				current_node.delete = True
+				break
+			current_node= current_node.next
+			current_node.origin = originalFile
+			current_node.original = False
+			current_node.dest = current_node.shortPath
+
+
 	print(" Printing out the GRID ")
 	printGrid(grid)
 	
