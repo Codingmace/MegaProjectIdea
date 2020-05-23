@@ -30,7 +30,13 @@ class ListNode:
     
     def set_short(self, value): # Sets the shorter path name
         self.shortPath = value
-
+    def printNode(self):
+        print("Original\tPath\t\tDelete\tCopy\tSource\t\tDestination")
+        print(("YES" if self.original else "NO") +"\t\t"+ self.shortPath,end="\t")
+        print(("YES" if self.delete else "NO") + "\t" + ("YES" if self.copy else "NO"), end="\t")
+        print(self.origin +"\t" +  self.dest) 
+        
+        
 # The linked list
 class SingleLinkedList:
     def __init__(self): 
@@ -204,13 +210,14 @@ def main():
 			print("Directory " , dirName ,  " already exists")
 #		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 	grid = []
+	allFiles=[] # all the list nodes of files
 	fileContent = [] # For what is going to be written to the file
 	os.chdir("Output\\0")
 	# Getting all the files set into nodes and stuff
 	for i in range(0, len(sets) , 1):
 		os.chdir("..\\" + str(i))
 		baseFiles = getFiles(".") # What comparing everything to
-		fileContent.append("")
+#		fileContent.append("")
 		for b in baseFiles: # For directory 0
 			data = md5_a_file(b)
 			path = os.path.abspath(b)
@@ -233,17 +240,19 @@ def main():
 		current_node.original = True
 		originalFile = current_node.shortPath
 #			print(current_node.path)
-		print(current_node.shortPath)
-		while current_node is not None:
-			if current_node.next is None:
-				current_node.delete = True
-				break
+#		print(current_node.shortPath)
+		allFiles.append(current_node)
+		while current_node.next is not None:
 			current_node= current_node.next
 			current_node.origin = originalFile
 			current_node.original = False
 			current_node.dest = current_node.shortPath
-
-
+			current_node.copy = True
+			current_node.delete = True
+			allFiles.append(current_node)
+		
+		for af in allFiles:
+			af.printNode()
 	print(" Printing out the GRID ")
 	printGrid(grid)
 	
@@ -253,6 +262,16 @@ def main():
 	print("Original Files")
 	for u in grid:
 		print(u.head.path)
+
+	# Delete the files that are not needed
+	for af in allFiles:
+		if af.delete:
+			print("removing the file at " + af.path)
+#			os.remove(af.path)
+# NEed to make sure it works first 
+	
+	# Compress the files again
+
 main()
 
 
