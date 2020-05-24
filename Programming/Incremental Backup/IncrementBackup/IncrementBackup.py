@@ -16,7 +16,6 @@ class ListNode:
         self.origin = "-" # File path based on
         self.dest = "-" # Destination path written to 
         self.delete = False # Last file so must be deleted 
-#        self.copy = False # Was it copied
         self.shortPath = ""
         
     def set_hash(self, value): # Sets the hash data
@@ -30,14 +29,12 @@ class ListNode:
     
     def set_short(self, value): # Sets the shorter path name
         self.shortPath = value
+
     def printNode(self):
         print("Original\tPath\t\tDelete\tCopy\tSource\t\tDestination")
-#        print("Original\tPath\t\tDelete\tSource\t\tDestination\t\t")
         print(("YES" if self.original else "NO") +"\t\t"+ self.shortPath,end="\t")
         print(("YES" if self.delete else "NO"), end="\t")
-#        print(("YES" if self.delete else "NO") + "\t" + ("YES" if self.copy else "NO"), end="\t")
         print(self.origin +"\t" +  self.dest)
-#        print(self.origin +"\t" +  self.dest + "\tWORKS" + ("YES" if self.original != self.delete else "NO"))
 
     def update(self):
         self.delete = self.origin != self.dest and self.dest != "-"
@@ -258,17 +255,17 @@ def main():
 			current_node.update()
 			allFiles.append(current_node)
 	
-	print(" Printing out the GRID ")
-	printGrid(grid)
+#	print(" Printing out the GRID ")
+#	printGrid(grid)
 	
-	print("Total Files")
-	for i in range(len(baseFiles)):
-		print(baseFiles[i])
-	print("Original Files")
-	for u in grid:
-		print(u.head.path)
+#	print("Total Files")
+#	for i in range(len(baseFiles)):
+#		print(baseFiles[i])
+#	print("Original Files")
+#	for u in grid:
+#		print(u.head.path)
 	sys.stdout.flush()
-	f = open("..\\stat.abby", "w")
+	f = open("..\\stat.txt", "w")
 	with zipfile.ZipFile("..\\" + sets[0], 'w') as myzip:
 		# Delete the files that are not needed
 		for af in allFiles:
@@ -276,12 +273,14 @@ def main():
 				print("removing the file at " + af.path)
 				os.remove(af.path)
 				f.write(af.origin + " " + af.dest + "\n")
-			if af.original:
+				allFiles.remove(af)
+			if af.original: # Add them to the zip file based on foldernumber
 				print("Keeping the file at " + af.path)
 				myzip.write(af.path, af.shortPath)
+		# Sort and write to the corresponding Zip folder
 		# Need to make sure it works first 
 		f.close()
-		myzip.write("..\\stat.abby", "stat.txt")
+		myzip.write("..\\stat.txt", "stat.abby")
 	if True:
 		return 0
 	# Compress the files again
