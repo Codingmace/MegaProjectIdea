@@ -268,31 +268,35 @@ def main():
 	for u in grid:
 		print(u.head.path)
 	sys.stdout.flush()
-	f = open("..\stat.txt", "w")
+	f = open("..\\stat.txt", "w")
+	with zipfile.ZipFile("..\\" + sets[0], 'w') as myzip:
+		# Delete the files that are not needed
+		for af in allFiles:
+			if af.delete:
+				print("removing the file at " + af.path)
+				os.remove(af.path)
+				f.write(af.origin + " " + af.dest + "\n")
+			if af.original:
+				print("Keeping the file at " + af.path)
+				myzip.write(af.path, af.shortPath)
+		# Need to make sure it works first 
+		f.close()
 
-	# Delete the files that are not needed
-	for af in allFiles:
-		if af.delete:
-			print("removing the file at " + af.path)
-			os.remove(af.path)
-			f.write(af.origin + " " + af.dest + "\n")
-		if af.original:
-			print("Keeping the file at " + af.path)
-# Need to make sure it works first 
-	f.close()
 	# Compress the files again
 #	print(os.path.abspath("."))
 	os.chdir("..")
 	print(os.path.abspath(baseFiles[0]))
+	if True:
+		return 0
 	for i in range(0, len(sets) , 1):
 			print(sets[i] + " is being compressed")
 			with zipfile.ZipFile(sets[i], 'w') as myzip:
 				y = getFiles(str(i))
 				for pq in y:
 					myzip.write(str(i) + "\\" + pq)
-			print(sets[i] + " has been compresssed")
+			print(sets[i] + " has been compresssed")	
 			myzip.close()
-
+	return 1
 
 #		myzip.write(folder + "\\changes.abby")
 #		myzip.write(folder + "\\a.txt")
