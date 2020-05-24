@@ -281,13 +281,14 @@ def main():
 				myzip.write(af.path, af.shortPath)
 		# Need to make sure it works first 
 		f.close()
-
+		myzip.write("..\\stat.txt", "stat.txt")
+	if True:
+		return 0
 	# Compress the files again
 #	print(os.path.abspath("."))
 	os.chdir("..")
-	print(os.path.abspath(baseFiles[0]))
-	if True:
-		return 0
+#	print(os.path.abspath(baseFiles[0]))
+	
 	for i in range(0, len(sets) , 1):
 			print(sets[i] + " is being compressed")
 			with zipfile.ZipFile(sets[i], 'w') as myzip:
