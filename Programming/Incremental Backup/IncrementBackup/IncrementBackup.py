@@ -192,6 +192,7 @@ def getFiles(fp): # Files Path
 		elif os.path.isfile(cur):
 			x.append(cur)
 		else: # For errors
+#			print(os.path.listdir(cur))
 			x.append(cur)
 		y.remove(cur)
 	return x
@@ -257,39 +258,52 @@ def main():
 			current_node.update()
 			allFiles.append(current_node)
 		
-		for af in allFiles:
-			af.printNode()
-	print(" Printing out the GRID ")
-	printGrid(grid)
+#		for af in allFiles:
+#			af.printNode()
+#	print(" Printing out the GRID ")
+#	printGrid(grid)
 	
-	print("Total Files")
-	for i in range(len(baseFiles)):
-		print(baseFiles[i])
+#	print("Total Files")
+#	for i in range(len(baseFiles)):
+#		print(baseFiles[i])
 	print("Original Files")
 	for u in grid:
 		print(u.head.path)
+
+		f = open("..\stat.txt", "w")
+
 
 	# Delete the files that are not needed
 	for af in allFiles:
 		if af.delete:
 			print("removing the file at " + af.path)
+			os.remove(af.path)
+			f.write(af.origin + " " + af.dest + "\n")
 		if af.original:
 			print("Keeping the file at " + af.path)
 #			os.remove(af.path)
 # Need to make sure it works first 
-	
+	f.close()
 	# Compress the files again
 	folder = "Ouput\\0"
 	print(os.path.abspath("."))
-	with zipfile.ZipFile('firstTest.zip', 'w') as myzip:
-		y = getFiles("..\\1")
-		for pq in y:
-			myzip.write(pq)
+#	print(sets[0])
+	os.chdir("..")
+	for i in range(0, len(sets) , 1):
+		print(sets[i] + " is being compressed")
+		with zipfile.ZipFile(sets[i], 'w') as myzip:
+			y = getFiles(str(i))
+			for pq in y:
+				myzip.write(str(i) + "\\" + pq)
+		print(sets[i] + " has been compresssed")
+#		os.remove(str(i))
+
 #		myzip.write(folder + "\\changes.abby")
 #		myzip.write(folder + "\\a.txt")
 
 # Write the decompress functions
 # Write compression of the files using a binary tree and compressing the dots
+# Huffman algorithem with the nodes based out of 100 and made
 # Decompressing everything
 # A user interface that way it is easy to use
 # Test multiple times to make sure that it works
