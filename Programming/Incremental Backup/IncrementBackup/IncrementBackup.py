@@ -183,8 +183,10 @@ def printGrid(grid):
 def getFiles(fp): # Files Path
 	x = []
 	y = os.listdir(fp)
+	print(os.path.abspath(fp))
 	while len(y) > 0:
 		cur = y[0]
+		print(os.path.abspath(cur))
 		if os.path.isdir(cur):
 			tmp = os.listdir(cur)
 			for t in tmp:
@@ -193,8 +195,10 @@ def getFiles(fp): # Files Path
 			x.append(cur)
 		else: # For errors
 #			print(os.path.listdir(cur))
+#			print(cur)
 			x.append(cur)
 		y.remove(cur)
+	print(x)
 	return x
 
 def main():
@@ -266,9 +270,9 @@ def main():
 #	print("Total Files")
 #	for i in range(len(baseFiles)):
 #		print(baseFiles[i])
-	print("Original Files")
-	for u in grid:
-		print(u.head.path)
+#	print("Original Files")
+#	for u in grid:
+#		print(u.head.path)
 
 		f = open("..\stat.txt", "w")
 
@@ -289,13 +293,16 @@ def main():
 	print(os.path.abspath("."))
 #	print(sets[0])
 	os.chdir("..")
+	print(os.path.abspath("."))
 	for i in range(0, len(sets) , 1):
-		print(sets[i] + " is being compressed")
-		with zipfile.ZipFile(sets[i], 'w') as myzip:
-			y = getFiles(str(i))
-			for pq in y:
-				myzip.write(str(i) + "\\" + pq)
-		print(sets[i] + " has been compresssed")
+			print(sets[i] + " is being compressed")
+			with zipfile.ZipFile(sets[i], 'w') as myzip:
+				y = getFiles(str(i))
+				for pq in y:
+					print(os.path.isdir(pq))
+					myzip.write(str(i) + "\\" + pq)
+			print(sets[i] + " has been compresssed")
+			myzip.close()
 #		os.remove(str(i))
 
 #		myzip.write(folder + "\\changes.abby")
