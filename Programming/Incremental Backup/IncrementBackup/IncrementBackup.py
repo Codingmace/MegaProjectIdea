@@ -294,12 +294,14 @@ def main():
 #	print(sets[0])
 	os.chdir("..")
 	print(os.path.abspath("."))
+	print(os.path.abspath(baseFiles[0]))
 	for i in range(0, len(sets) , 1):
 			print(sets[i] + " is being compressed")
 			with zipfile.ZipFile(sets[i], 'w') as myzip:
 				y = getFiles(str(i))
+#				xy = printFiles(str(i), "*.*") # Prints nothing
 				for pq in y:
-					print(os.path.isdir(pq))
+#					print(os.path.isdir(pq))
 					myzip.write(str(i) + "\\" + pq)
 			print(sets[i] + " has been compresssed")
 			myzip.close()
