@@ -202,9 +202,9 @@ def getFiles(fp): # Files Path
 	return x
 
 def main():
-	workspace = "TestData"
+	workspace = "TestData2"
 	# os.chdir(workspace) # Created issues
-	filesList = printFiles('TestData', '*.zip') # Get valid zip files
+	filesList = printFiles('TestData2', '*.zip') # Get valid zip files
 	# Need to adjust for multiple states of files (Example Files.zip and iTunes.zip)
 
 	sets = sortDates(filesList) # This sorting works
@@ -268,7 +268,7 @@ def main():
 	for u in grid:
 		print(u.head.path)
 	sys.stdout.flush()
-	f = open("..\\stat.txt", "w")
+	f = open("..\\stat.abby", "w")
 	with zipfile.ZipFile("..\\" + sets[0], 'w') as myzip:
 		# Delete the files that are not needed
 		for af in allFiles:
@@ -281,7 +281,7 @@ def main():
 				myzip.write(af.path, af.shortPath)
 		# Need to make sure it works first 
 		f.close()
-		myzip.write("..\\stat.txt", "stat.txt")
+		myzip.write("..\\stat.abby", "stat.txt")
 	if True:
 		return 0
 	# Compress the files again
