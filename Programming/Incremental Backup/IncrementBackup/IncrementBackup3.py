@@ -248,27 +248,34 @@ def main():
 	for g in grid:
 		# define current_node
 		current_node = g.head
+#		current_node.original = True
 		current_node.update()
 		allFiles.append(current_node)
 		originalFile = current_node.shortPath
 		while current_node.next is not None:
 			current_node= current_node.next
 			current_node.origin = originalFile
+#			current_node.original = False
 			current_node.dest = current_node.shortPath
+#			current_node.copy = True
+#			current_node.delete = True
 			current_node.update()
 			allFiles.append(current_node)
+		
+#		for af in allFiles:
+#			af.printNode()
+#	print(" Printing out the GRID ")
+#	printGrid(grid)
 	
-	print(" Printing out the GRID ")
-	printGrid(grid)
-	
-	print("Total Files")
-	for i in range(len(baseFiles)):
-		print(baseFiles[i])
-	print("Original Files")
-	for u in grid:
-		print(u.head.path)
-	sys.stdout.flush()
-	f = open("..\stat.txt", "w")
+#	print("Total Files")
+#	for i in range(len(baseFiles)):
+#		print(baseFiles[i])
+#	print("Original Files")
+#	for u in grid:
+#		print(u.head.path)
+
+		f = open("..\stat.txt", "w")
+
 
 	# Delete the files that are not needed
 	for af in allFiles:
@@ -278,21 +285,27 @@ def main():
 			f.write(af.origin + " " + af.dest + "\n")
 		if af.original:
 			print("Keeping the file at " + af.path)
+#			os.remove(af.path)
 # Need to make sure it works first 
 	f.close()
 	# Compress the files again
-#	print(os.path.abspath("."))
+	folder = "Ouput\\0"
+	print(os.path.abspath("."))
+#	print(sets[0])
 	os.chdir("..")
+#	print(os.path.abspath("."))
 	print(os.path.abspath(baseFiles[0]))
 	for i in range(0, len(sets) , 1):
 			print(sets[i] + " is being compressed")
 			with zipfile.ZipFile(sets[i], 'w') as myzip:
 				y = getFiles(str(i))
+#				xy = printFiles(str(i), "*.*") # Prints nothing
 				for pq in y:
+#					print(os.path.isdir(pq))
 					myzip.write(str(i) + "\\" + pq)
 			print(sets[i] + " has been compresssed")
 			myzip.close()
-
+#		os.remove(str(i))
 
 #		myzip.write(folder + "\\changes.abby")
 #		myzip.write(folder + "\\a.txt")
