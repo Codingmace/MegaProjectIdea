@@ -124,7 +124,8 @@ def printFiles(folderpath, pattern):
 def sortDates(files): 
 	fin = []
 	i = 0
-	fileName = files[0].rfind(" ") 
+	fileName = files[0].rfind(" ")
+	# Can turn these into tuplets later on
 	while len(files) != 0:
 		min = files[0]
 		minTime = min[fileName:].split("-")
@@ -190,11 +191,14 @@ def getFiles(fp): # Files Path
 	print(x)
 	return x
 
+def parseName(a): # Parses out the file without date
+	b = a.rfind(" ")
+	return a[:b]
+
 def findNames(fl): # Finds the compatable file names
 	result = []
 	for f in fl:
-		a = f.rfind(" ")
-		tempFile = f[:a]
+		tempFile = parseName(f)
 		if tempFile in result:
 			print(tempFile + " is already valid archive")
 		else:
@@ -206,27 +210,53 @@ def main():
 	workspace = input("Enter the folder reading from: ")
 	filesList = printFiles(workspace, '*.zip') # Get valid zip files
 	resultName = findNames(filesList)
+	print()
 	if len(resultName) == 1: # Only one option
 		tempName = resultName[0]
 		print("Archive of " + tempName + " is being assembled")
 	else: # Must choose option
-		print("How lucky for us. We are given " + len(resultName) + " options")
+		print("How lucky for us. We are given " + str(len(resultName)) + " options")
 		print("Select one of the ones below")
 		choice = -1
-		while True:
+		# Could add a way to try and predict what saying
+		# EX: taht is corrected to that
+		while choice < 0:
 			for rn in range(0, len(resultName), 1):
-				 print(str(rn) + resultName[rn])
+				 print(str(rn) + ". " + resultName[rn])
 			choice = input("Enter the number of the file you want: ")
-			if choice >= 0 and choice < len(resultName):
-				print("Thanks for entering a valid number")
-			else: # Not by number lets see if it is filename
-				
-			
-		for rn in resultName:
-
+			try:
+				choice = int(choice) # Try is for this statement
+				if choice >= 0 and choice< len(resultName):
+					print("Thanks for entering a valid number")
+					
+			except:
+				print("That is not nice of you. You entered an invalid number")
+				print("Checking to see if I can figure it out")
+				for rp in resultName:
+					if choice == rp:
+						print("I think I figured it out despite you not following my directions")
+						choice = resultName.index(choice)
+						print("I an going with files asscociated with number " + str(choice))
+				if type(choice) is not int:
+					print("Nope you really screwed up. Try again")
+					choice = -1
+#					print()
+				else:
+					if choice < 0:
+						print("At least you entered an integer.... It is not valid so try again")
+						choice = -1
+#						print()
+				print()
+		print("Removing zip filles not being processed from array")
+		con = 0
+		for fl in filesList:
+			if parseName(fl) != resultName[choice]:
+				filesList.remove(fl)
+				con+= 1
+		print(str(con) + " number of files have been removed")
+		print()
 
 	sets = sortDates(filesList)
-	# Need to adjust for multiple states of files (Example Files.zip and iTunes.zip)
 
 	# Since they are zip have to extract them
 	# Adjust later for temporary files
