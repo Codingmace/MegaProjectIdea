@@ -1,6 +1,5 @@
 package Chess;
 
-
 import java.awt.Component;
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;

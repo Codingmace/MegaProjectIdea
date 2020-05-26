@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
-
 @SuppressWarnings("serial")
 public class Square extends JComponent {
 

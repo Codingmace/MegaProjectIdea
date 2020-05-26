@@ -383,7 +383,6 @@ public class Chess {
         return beta;
     }
 
- 
     /**
      * A temporary variable used to display the score in the info panel and to
      * draw the score graph.
@@ -392,9 +391,10 @@ public class Chess {
 
     /**
      * Invokes AI Move Computation. Calculates the best move and makes it.
+     *
      * @param startingPosition
      * @param bAsPlayer
-     * @return 
+     * @return
      */
     public ChessPosition playGame(ChessPosition startingPosition, boolean bAsPlayer) {
         // Let's clear the principal variation
@@ -455,9 +455,10 @@ public class Chess {
      * setControlData function to determine board control. This control value is
      * adjusted and added to the evaluation value, before it is returned to the
      * caller, alphaBetaHelper.
+     *
      * @param p
      * @param player
-     * @return 
+     * @return
      */
     public float positionEvaluation(ChessPosition p, boolean player) {
         ChessPosition pos = p;
@@ -554,14 +555,14 @@ public class Chess {
             case 0:
             case 7:
                 break;
-                
+
             case ChessPosition.PAWN: {
                 // Check if pawn can take left
                 move_offset = square_index + (side_index * 10) + 1;
                 if (move_offset >= 0 && move_offset < 80) {
                     target = b[move_offset];
 
-                    if ((piece > 0 && target < 0 && target != 7)|| (piece < 0 && target > 0 && target != 7)) {
+                    if ((piece > 0 && target < 0 && target != 7) || (piece < 0 && target > 0 && target != 7)) {
                         piece_moves[count++] = move_offset;
                         control[move_offset] += 12;
 
@@ -778,6 +779,7 @@ public class Chess {
 
     /**
      * Calls NewGame() and initialises the temporary piece move lists.
+     *
      * @param main
      */
     public Chess(Main main) {
@@ -998,8 +1000,9 @@ public class Chess {
     /**
      * Takes a ChessPosition class and encodes it as a string for easy storing
      * in database.
+     *
      * @param p
-     * @return 
+     * @return
      */
     public static String encodePosition(ChessPosition p) {
         String str = new String();

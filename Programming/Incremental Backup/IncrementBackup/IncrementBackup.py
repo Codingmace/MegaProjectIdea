@@ -444,12 +444,19 @@ def decompress():
 
 
 def main():
-#	compress()
-
-# Decompression time
-	workspace = input("Define the folder that holds the compressed zip files: ")
-	
-	print("Decompression time")
+	print("Welcome to the worderful program that Jacob has created")
+	print("So we have very few but at least some options.")
+	print("1. Compress")
+	print("2. Decompress")
+	choices = input("Enter your choice:")
+	if choices == 1:
+		compress()
+	elif choices == 2:
+		decompress()
+	else:
+		print("That is not a valid option. That sucks")
+		print("Time to quit")
+		return 0
 
 # Write the decompress functions
 # Write compression of the files using a binary tree and compressing the dots

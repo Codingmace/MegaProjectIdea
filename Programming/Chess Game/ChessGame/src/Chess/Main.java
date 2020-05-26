@@ -58,7 +58,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * The width of the chess board, used for drawing calculations.
      */
     public static final int BOARD_WIDTH = TILE_WIDTH * 8;
-    
+
     /**
      * The height of the chess board, used for drawing calculations.
      */
@@ -171,14 +171,14 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             return "";
         }
     };
-    
+
     /**
      * A table for drawing the moves stored in moveList.
      *
      * @see moveList
      */
     JTable moveTable = new JTable(moveTable_dataModel);
-    
+
     /**
      * A scroll pane accompanying the moves table.
      *
@@ -259,7 +259,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * player.
      */
     static int hoverPiece = 0;
-    
+
     /**
      * Stores the most recent mouse coordinates. Used by drawing routines.
      */
@@ -299,7 +299,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * An image holding the strip of black and white pieces.
      */
     static Image strip; // the image strip
-    
+
     /**
      * An array of images holding the piece images extracted from the image
      * strip. Used by drawing routines.
@@ -341,6 +341,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
     /**
      * Alert Displays a dialog containing useful information.
+     *
      * @param title
      * @param message
      */

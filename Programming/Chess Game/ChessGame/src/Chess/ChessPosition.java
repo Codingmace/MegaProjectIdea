@@ -14,12 +14,11 @@ public class ChessPosition {
      * An array of board squares.
      */
     public int[] board = new int[80];
-    
+
     /**
      * Stores the index of pieces on the board. Exists for faster move
      * generation.
      */
-    
     boolean bWhiteKingMoved = false;
     boolean bBlackKingMoved = false;
 
@@ -31,6 +30,7 @@ public class ChessPosition {
     /**
      * Applies the given move parameter to the board position saved in this
      * instance of the class.
+     *
      * @param move
      */
     public void makeMove(ChessMove move) {
@@ -52,10 +52,10 @@ public class ChessPosition {
         }
     }
 
-   
     /**
      * Instantiates the board position by mirroring another board position. Used
      * extensively during alpha-beta search.
+     *
      * @param p
      */
     public ChessPosition(ChessPosition p) {

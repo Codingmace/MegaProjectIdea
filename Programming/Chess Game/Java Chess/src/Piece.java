@@ -198,15 +198,10 @@ public abstract class Piece {
     public abstract List<Square> getLegalMoves(Board b);
 }
 
-
 /**
  *
  * @author MasterWard
  */
-
-
-
-
 class Pawn extends Piece {
 
     private boolean wasMoved;
@@ -421,10 +416,8 @@ class Knight extends Piece {
                 }
             }
         }
-
         return legalMoves;
     }
-
 }
 
 class Bishop extends Piece {
