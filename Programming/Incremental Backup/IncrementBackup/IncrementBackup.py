@@ -3,6 +3,7 @@ import os
 import fnmatch
 import hashlib
 import sys
+import shutil
 
 # Class for the nodes
 class ListNode:
@@ -205,13 +206,13 @@ def main():
 	sets = printFiles(workspace, '*.zip') # Get valid zip files
 	resultName = findNames(sets)
 	print()
+	choice = -1
 	if len(resultName) == 1: # Only one option
 		tempName = resultName[0]
 		print("Archive of " + tempName + " is being assembled")
 	else: # Must choose option
 		print("How lucky for us. We are given " + str(len(resultName)) + " options")
 		print("Select one of the ones below")
-		choice = -1
 		# Could add a way to try and predict what saying
 		# EX: taht is corrected to that
 		while choice < 0:
@@ -248,12 +249,13 @@ def main():
 				con+= 1
 		print("I have removed " + str(con) + " files from the array")
 		print()
+		if True: # Cleaning
+			del rn
+			del fl
+			del con
 	if True: # Cleaning
 		del choice
 		del resultName
-		del rn
-		del fl
-		del con
 
 	sets = sortDates(sets)
 
@@ -301,7 +303,7 @@ def main():
 		del itemIndex
 		del dirName
 
-	allFiles=[] # all the list nodes of files
+	allFiles=[] # all the list nodes of files ( DO I need?)
 # Modify so I can based on last one 
 # EX: Original is 0 for 1 and 1 for 2 and 2 for 3 instead of 0 for 1,2,3
 	for g in grid:
@@ -315,10 +317,16 @@ def main():
 			current_node.dest = current_node.shortPath
 			current_node.update()
 			allFiles.append(current_node)
-	
+	if True: # Cleaning
+		del current_node
+		del g
 
 #	sys.stdout.flush() #Doesn't matter at the moment
-	changesFile = open("..\\stat.txt", "w") # Changes File
+	os.chdir("..\\")
+	if not os.path.exists(workspace + "_comp\\"):
+		os.mkdir(workspace + "_comp\\")
+	os.chdir(workspace + "_comp\\")
+	changesFile = open("stat.txt", "w") # Changes File
 	print(os.getcwd())
 
 	for i in range(0, len(sets) , 1):
@@ -337,11 +345,37 @@ def main():
 					arcName = alf.shortPath[alf.shortPath.find("\\")+1:]
 					myzip.write(alf.path, arcName)
 					allFiles.remove(alf)
+			print(os.getcwd())
+			changesFile.flush()
 			myzip.write("stat.txt", "stat.abby")
+	changesFile.flush()
 	changesFile.close()
+	if True: # Cleaning
+		del af
+		del alf
+		del allFiles
+		del arcName
+		del baseFiles
+		del changesFile
+		del fileContent
+		del grid
+		del i
+		del myzip
+		del originalFile
+		del qs
+		del sets
+		del tempName
+		del workspace
+	os.chdir("..")
+	print(os.getcwd())
+	shutil.rmtree("Output")
+#	os.rmdir("Output") # Access Denied
+	# DELETE THE OUTPUT FOLDER
 	if True: # Need to remove later once checked
 		return 0
-	os.chdir("..")
+
+	# Decompression Function
+
 
 # Write the decompress functions
 # Write compression of the files using a binary tree and compressing the dots
@@ -353,10 +387,3 @@ def main():
 main()
 
 
-
-# ADJUSTMENT
-# Write the changes to be made file using code
-# Adjust the following files with the changes in files IE deleting
-# Files that are written to can add extension .abby and .jacob
-# Recompress the folders
-# Write a decompression function and how that will change
