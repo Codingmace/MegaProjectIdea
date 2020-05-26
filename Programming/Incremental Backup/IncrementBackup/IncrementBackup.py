@@ -7,30 +7,22 @@ import sys
 # Class for the nodes
 class ListNode:
 
-	def __init__(self, path,number):
+	def __init__(self, b, i):
+		self.data = md5_a_file(b)
+		self.path = os.path.abspath(b)
+		self.shortPath = "Output\\" + str(i) +"\\" + b
 		self.next = None # Set Reference (Following Node)
-		self.path = path # Sets the path
-		self.foldNumb = number # Sets the archive count number
-		
+		self.foldNumb = i # Sets the archive count number
 		self.original = True # Writting file or not
 		self.origin = "-" # File path based on
 		self.dest = "-" # Destination path written to 
 		self.delete = False # Last file so must be deleted 
-		self.shortPath = ""
 		
-	def set_hash(self, value): # Sets the hash data
-		self.hash = value
-
-	def set_data(data):
-		self.data = data
-	def get_hash(self): # Returns hash
-		return self.hash
+	def get_data(self):
+		return self.data
 
 	def has_value(self, value): # Compares the value with node value
 		return self.data == value
-	
-	def set_short(self, value): # Sets the shorter path name
-		self.shortPath = value
 
 	def printNode(self): # Print data about nodes
 		print("Original\tPath\t\tDelete\tCopy\tSource\t\tDestination")
@@ -214,8 +206,8 @@ def delete(a):
 def main():
 #	workspace = input("Enter the folder reading from: ")
 	workspace = "TestData"
-	filesList = printFiles(workspace, '*.zip') # Get valid zip files
-	resultName = findNames(filesList)
+	sets = printFiles(workspace, '*.zip') # Get valid zip files
+	resultName = findNames(sets)
 	print()
 	if len(resultName) == 1: # Only one option
 		tempName = resultName[0]
@@ -254,9 +246,9 @@ def main():
 				print()
 		print("Removing zip filles not being processed from array")
 		con = 0
-		for fl in filesList:
+		for fl in sets:
 			if parseName(fl) != resultName[choice]:
-				filesList.remove(fl)
+				sets.remove(fl)
 				con+= 1
 		print("I have removed " + str(con) + " files from the array")
 		print()
@@ -265,8 +257,9 @@ def main():
 		del resultName
 		del rn
 		del fl
+		del con
 
-	sets = sortDates(filesList)
+	sets = sortDates(sets)
 
 	# Since they are zip have to extract them
 	# Adjust later for temporary folders
@@ -286,7 +279,7 @@ def main():
 		print("Extraction of " + sets[i] + " complete")
 	
 	grid = []
-	allFiles=[] # all the list nodes of files
+
 	fileContent = [] # For what is going to be written to the file
 	os.chdir("Output\\0")
 	# Getting all the files set into nodes and stuff
@@ -296,22 +289,22 @@ def main():
 		baseFiles = getFiles(".") # What comparing everything to
 		print("Creating Nodes and adding to an array of LinkedList")
 		for b in baseFiles: 
-			data = md5_a_file(b)
-			path = os.path.abspath(b)
-			shortPath = "Output\\" + str(i) +"\\" + b
-#			print(data + " " + path)
-			q = ListNode(path, i)
-			q.set_short(shortPath)
-			q.set_data(data)
-			itemIndex = linkedFind(grid, data)
-			if linkedFind(grid,data) >= 0: # It was found
+			q = ListNode(b,i)
+			itemIndex = linkedFind(grid, q.get_data())
+			if itemIndex >= 0: # It was found
 				grid[itemIndex].add_list_item(q)
 			else: # Adds the new item
 				qs = SingleLinkedList()
 				qs.add_list_item(q)
 				grid.append(qs)
-				# Traverse Back so that we can find the node
+	print("I have sucessfully populated the array")
+	print()
+	if True: # Cleaning Up
+		del q
+		del b
+		del itemIndex
 
+	allFiles=[] # all the list nodes of files
 	for g in grid:
 		# define current_node
 		current_node = g.head
