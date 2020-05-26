@@ -10,7 +10,7 @@ class ListNode:
 	def __init__(self, b, i):
 		self.data = md5_a_file(b)
 		self.path = os.path.abspath(b)
-		self.shortPath = "Output\\" + str(i) +"\\" + b
+		self.shortPath = str(i) +"\\" + b
 		self.next = None # Set Reference (Following Node)
 		self.foldNumb = i # Sets the archive count number
 		self.original = True # Writting file or not
@@ -199,10 +199,6 @@ def findNames(fl): # Finds the compatable file names
 			result.append(tempFile)
 	return result
 
-def delete(a):
-	for b in a:
-		del b
-
 def main():
 #	workspace = input("Enter the folder reading from: ")
 	workspace = "TestData"
@@ -279,13 +275,12 @@ def main():
 		print("Extraction of " + sets[i] + " complete")
 	
 	grid = []
-
 	fileContent = [] # For what is going to be written to the file
 	os.chdir("Output\\0")
 	# Getting all the files set into nodes and stuff
 	for i in range(0, len(sets) , 1):
 		os.chdir("..\\" + str(i))
-		print("Changing workspace to " + str(os.getcwdb()))
+		print("Changing workspace to " + os.getcwd())
 		baseFiles = getFiles(".") # What comparing everything to
 		print("Creating Nodes and adding to an array of LinkedList")
 		for b in baseFiles: 
@@ -299,14 +294,17 @@ def main():
 				grid.append(qs)
 	print("I have sucessfully populated the array")
 	print()
+	os.chdir("..\\")
 	if True: # Cleaning Up
 		del q
 		del b
 		del itemIndex
+		del dirName
 
 	allFiles=[] # all the list nodes of files
+# Modify so I can based on last one 
+# EX: Original is 0 for 1 and 1 for 2 and 2 for 3 instead of 0 for 1,2,3
 	for g in grid:
-		# define current_node
 		current_node = g.head
 		current_node.update()
 		allFiles.append(current_node)
@@ -318,51 +316,32 @@ def main():
 			current_node.update()
 			allFiles.append(current_node)
 	
-#	print(" Printing out the GRID ")
-#	printGrid(grid)
-	
-#	print("Total Files")
-#	for i in range(len(baseFiles)):
-#		print(baseFiles[i])
-#	print("Original Files")
-#	for u in grid:
-#		print(u.head.path)
-	sys.stdout.flush()
-	f = open("..\\stat.txt", "w")
-	with zipfile.ZipFile("..\\" + sets[0], 'w') as myzip:
-		# Delete the files that are not needed
-		for af in allFiles:
-			if af.delete:
-				print("removing the file at " + af.path)
-				os.remove(af.path)
-				f.write(af.origin + " " + af.dest + "\n")
-				allFiles.remove(af)
-			if af.original: # Add them to the zip file based on foldernumber
-				print("Keeping the file at " + af.path)
-				myzip.write(af.path, af.shortPath)
-		# Sort and write to the corresponding Zip folder
-		# Need to make sure it works first 
-		f.close()
-		myzip.write("..\\stat.txt", "stat.abby")
-	if True:
-		return 0
-	# Compress the files again
-#	print(os.path.abspath("."))
-	os.chdir("..")
-#	print(os.path.abspath(baseFiles[0]))
-	
+
+#	sys.stdout.flush() #Doesn't matter at the moment
+	changesFile = open("..\\stat.txt", "w") # Changes File
+	print(os.getcwd())
+
 	for i in range(0, len(sets) , 1):
-			print(sets[i] + " is being compressed")
-			with zipfile.ZipFile(sets[i], 'w') as myzip:
-				y = getFiles(str(i))
-				for pq in y:
-					myzip.write(str(i) + "\\" + pq)
-			print(sets[i] + " has been compresssed")	
-			myzip.close()
-	return 1
-	
-#		myzip.write(folder + "\\changes.abby")
-#		myzip.write(folder + "\\a.txt")
+		for af in allFiles: # Delete the unwanted files
+			if af.delete:
+					print("removing the file at " + af.path)
+					changesFile.write(af.origin + " " + af.dest + "\n")
+					os.remove(af.path)
+					allFiles.remove(af)
+			if af.original:
+					print("Keeping the file at " + af.path)
+		changesFile.flush()
+		with zipfile.ZipFile(sets[i], 'w') as myzip: # Compressing Files again
+			for alf in allFiles:
+				if alf.foldNumb == i:
+					arcName = alf.shortPath[alf.shortPath.find("\\")+1:]
+					myzip.write(alf.path, arcName)
+					allFiles.remove(alf)
+			myzip.write("stat.txt", "stat.abby")
+	changesFile.close()
+	if True: # Need to remove later once checked
+		return 0
+	os.chdir("..")
 
 # Write the decompress functions
 # Write compression of the files using a binary tree and compressing the dots
