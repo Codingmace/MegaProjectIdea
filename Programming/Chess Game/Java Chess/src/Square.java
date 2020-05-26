@@ -74,6 +74,11 @@ public class Square extends JComponent {
         this.occupyingPiece = p;
     }
 
+    /**
+     *
+     * @param g
+     */
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -90,6 +95,10 @@ public class Square extends JComponent {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int prime = 31;

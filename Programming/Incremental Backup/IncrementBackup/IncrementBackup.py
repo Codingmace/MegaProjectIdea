@@ -436,99 +436,12 @@ def decompress():
 		print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
 		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 		print("Extraction of " + sets[i] + " complete")
-	
-	grid = []
-	fileContent = [] # For what is going to be written to the file
-	os.chdir("Output\\0")
-	# Getting all the files set into nodes and stuff
-	for i in range(0, len(sets) , 1):
-		os.chdir("..\\" + str(i))
-		print("Changing workspace to " + os.getcwd())
-		baseFiles = getFiles(".") # What comparing everything to
-		print("Creating Nodes and adding to an array of LinkedList")
-		for b in baseFiles: 
-			q = ListNode(b,i)
-			itemIndex = linkedFind(grid, q.get_data())
-			if itemIndex >= 0: # It was found
-				grid[itemIndex].add_list_item(q)
-			else: # Adds the new item
-				qs = SingleLinkedList()
-				qs.add_list_item(q)
-				grid.append(qs)
-	print("I have sucessfully populated the array")
-	print()
-	os.chdir("..\\")
-	if True: # Cleaning Up
-		del q
-		del b
-		del itemIndex
-		del dirName
 
-	allFiles=[] # all the list nodes of files ( DO I need?)
-# Modify so I can based on last one 
-# EX: Original is 0 for 1 and 1 for 2 and 2 for 3 instead of 0 for 1,2,3
-	for g in grid:
-		current_node = g.head
-		current_node.update()
-		allFiles.append(current_node)
-		originalFile = current_node.shortPath
-		while current_node.next is not None:
-			current_node= current_node.next
-			current_node.origin = originalFile
-			current_node.dest = current_node.shortPath
-			current_node.update()
-			allFiles.append(current_node)
-	if True: # Cleaning
-		del current_node
-		del g
+	print("We are now going to have to copy the files ")
+	print("After copying over files we are going to recompress????")
+	if True:
+		return 0
 
-	os.chdir("..\\")
-	if not op.exists(workspace + "_comp\\"):
-		os.mkdir(workspace + "_comp\\")
-	os.chdir(workspace + "_comp\\")
-	changesFile = open("stat.txt", "w") # Changes File
-	print(os.getcwd())
-
-	for i in range(0, len(sets) , 1):
-		for af in allFiles: # Delete the unwanted files
-			if af.delete:
-					print("removing the file at " + af.path)
-					changesFile.write(af.origin + " " + af.dest + "\n")
-					os.remove(af.path)
-					allFiles.remove(af)
-			if af.original:
-					print("Keeping the file at " + af.path)
-		changesFile.flush()
-		with zipfile.ZipFile(sets[i], 'w') as myzip: # Compressing Files again
-			for alf in allFiles:
-				if alf.foldNumb == i:
-					arcName = alf.shortPath[alf.shortPath.find("\\")+1:]
-					myzip.write(alf.path, arcName)
-					allFiles.remove(alf)
-			print(os.getcwd())
-			changesFile.flush()
-			myzip.write("stat.txt", "stat.abby")
-	changesFile.flush()
-	changesFile.close()
-	if False: # Cleaning
-		del af
-		del alf
-		del allFiles
-		del arcName
-		del baseFiles
-		del changesFile
-		del fileContent
-		del grid
-		del i
-		del myzip
-		del originalFile
-		del qs
-		del sets
-		del tempName
-		del workspace
-	os.chdir("..")
-	print(os.getcwd())
-	shutil.rmtree("Output") # Cleans up
 
 def main():
 #	compress()
