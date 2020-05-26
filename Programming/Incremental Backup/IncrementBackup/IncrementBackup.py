@@ -5,6 +5,7 @@ import fnmatch
 import hashlib
 import sys
 import shutil
+import cv2
 
 # Class for the nodes
 class ListNode:
@@ -382,11 +383,11 @@ def decompress():
 		while choice < 0:
 			for rn in range(0, len(resultName), 1):
 				 print(str(rn) + ". " + resultName[rn])
-#			choice = "0"
-			choice = input("Enter the number of the file you want: ")
+			choice = "0"
+#			choice = input("Enter the number of the file you want: ")
 			try:
 				choice = int(choice) # Try is for this statement
-				if choice >= 0 and choice< len(resultName):
+				if choice >= 0 and choice< len(resultName): 
 					print("Thanks for entering a valid number")
 					
 			except:
@@ -424,16 +425,12 @@ def decompress():
 	sets = sortDates(sets)
 
 	# Since they are zip have to extract them
-	# Adjust later for temporary folders
 	for i in range(0, len(sets) , 1):
 		# Create target Directory if don't exist
 		dirName = "Output\\" + str(i)
 		if not op.exists(dirName):
 			os.makedirs(dirName) # For multiple
 			print("Directory " , dirName ,  " has been created ")
-#			print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
-#			zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
-#			print("Extraction of " + sets[i] + " complete")
 		else:
 			print("Directory " , dirName ,  " already exists")
 		print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
@@ -485,7 +482,6 @@ def decompress():
 		del current_node
 		del g
 
-#	sys.stdout.flush() #Doesn't matter at the moment
 	os.chdir("..\\")
 	if not op.exists(workspace + "_comp\\"):
 		os.mkdir(workspace + "_comp\\")
