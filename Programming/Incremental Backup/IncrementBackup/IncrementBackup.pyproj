@@ -12,6 +12,9 @@
     <Name>IncrementBackup</Name>
     <RootNamespace>IncrementBackup</RootNamespace>
     <InterpreterId>Global|PythonCore|3.8-32</InterpreterId>
+    <TestFramework>none</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.</UnitTestRootDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

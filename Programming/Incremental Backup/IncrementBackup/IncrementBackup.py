@@ -7,8 +7,7 @@ import sys
 # Class for the nodes
 class ListNode:
 
-	def __init__(self, data, path,number):
-		self.data = data # Set Data
+	def __init__(self, path,number):
 		self.next = None # Set Reference (Following Node)
 		self.path = path # Sets the path
 		self.foldNumb = number # Sets the archive count number
@@ -22,6 +21,8 @@ class ListNode:
 	def set_hash(self, value): # Sets the hash data
 		self.hash = value
 
+	def set_data(data):
+		self.data = data
 	def get_hash(self): # Returns hash
 		return self.hash
 
@@ -206,8 +207,13 @@ def findNames(fl): # Finds the compatable file names
 			result.append(tempFile)
 	return result
 
+def delete(a):
+	for b in a:
+		del b
+
 def main():
-	workspace = input("Enter the folder reading from: ")
+#	workspace = input("Enter the folder reading from: ")
+	workspace = "TestData"
 	filesList = printFiles(workspace, '*.zip') # Get valid zip files
 	resultName = findNames(filesList)
 	print()
@@ -223,7 +229,8 @@ def main():
 		while choice < 0:
 			for rn in range(0, len(resultName), 1):
 				 print(str(rn) + ". " + resultName[rn])
-			choice = input("Enter the number of the file you want: ")
+			choice = "0"
+#			choice = input("Enter the number of the file you want: ")
 			try:
 				choice = int(choice) # Try is for this statement
 				if choice >= 0 and choice< len(resultName):
@@ -240,12 +247,10 @@ def main():
 				if type(choice) is not int:
 					print("Nope you really screwed up. Try again")
 					choice = -1
-#					print()
 				else:
 					if choice < 0:
 						print("At least you entered an integer.... It is not valid so try again")
 						choice = -1
-#						print()
 				print()
 		print("Removing zip filles not being processed from array")
 		con = 0
@@ -253,23 +258,33 @@ def main():
 			if parseName(fl) != resultName[choice]:
 				filesList.remove(fl)
 				con+= 1
-		print(str(con) + " number of files have been removed")
+		print("I have removed " + str(con) + " files from the array")
 		print()
+	if True: # Cleaning
+		del choice
+		del resultName
+		del rn
+		del fl
 
 	sets = sortDates(filesList)
 
 	# Since they are zip have to extract them
-	# Adjust later for temporary files
+	# Adjust later for temporary folders
 	for i in range(0, len(sets) , 1):
 		# Create target Directory if don't exist
 		dirName = "Output\\" + str(i)
 		if not os.path.exists(dirName):
-			os.mkdir(dirName)
-			print("Directory " , dirName ,  " Created ")
+			os.makedirs(dirName) # For multiple
+			print("Directory " , dirName ,  " has been created ")
+#			print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
 			zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
+#			print("Extraction of " + sets[i] + " complete")
 		else:
 			print("Directory " , dirName ,  " already exists")
-#		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName) # Check to make sure it is not bigger than 4 gb
+		print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
+#		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
+		print("Extraction of " + sets[i] + " complete")
+	
 	grid = []
 	allFiles=[] # all the list nodes of files
 	fileContent = [] # For what is going to be written to the file
@@ -277,15 +292,17 @@ def main():
 	# Getting all the files set into nodes and stuff
 	for i in range(0, len(sets) , 1):
 		os.chdir("..\\" + str(i))
+		print("Changing workspace to " + str(os.getcwdb()))
 		baseFiles = getFiles(".") # What comparing everything to
-#		fileContent.append("")
-		for b in baseFiles: # For directory 0
+		print("Creating Nodes and adding to an array of LinkedList")
+		for b in baseFiles: 
 			data = md5_a_file(b)
 			path = os.path.abspath(b)
 			shortPath = "Output\\" + str(i) +"\\" + b
-			print(data + " " + path)
-			q = ListNode(data, path, i)
+#			print(data + " " + path)
+			q = ListNode(path, i)
 			q.set_short(shortPath)
+			q.set_data(data)
 			itemIndex = linkedFind(grid, data)
 			if linkedFind(grid,data) >= 0: # It was found
 				grid[itemIndex].add_list_item(q)
