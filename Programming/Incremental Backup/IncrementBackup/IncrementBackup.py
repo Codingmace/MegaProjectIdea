@@ -6,102 +6,98 @@ import sys
 
 # Class for the nodes
 class ListNode:
-    def __init__(self, data, path,number):
-        self.data = data # Set Data
-        self.next = None # Set Reference (Following Node)
-        self.path = path # Sets the path
-        self.foldNumb = number # Sets the archive count number
-        
-        self.original = True # Writting file or not
-        self.origin = "-" # File path based on
-        self.dest = "-" # Destination path written to 
-        self.delete = False # Last file so must be deleted 
-        self.shortPath = ""
-        
-    def set_hash(self, value): # Sets the hash data
-        self.hash = value
 
-    def get_hash(self): # Returns hash
-        return self.hash
+	def __init__(self, data, path,number):
+		self.data = data # Set Data
+		self.next = None # Set Reference (Following Node)
+		self.path = path # Sets the path
+		self.foldNumb = number # Sets the archive count number
+		
+		self.original = True # Writting file or not
+		self.origin = "-" # File path based on
+		self.dest = "-" # Destination path written to 
+		self.delete = False # Last file so must be deleted 
+		self.shortPath = ""
+		
+	def set_hash(self, value): # Sets the hash data
+		self.hash = value
 
-    def has_value(self, value): # Compares the value with node value
-        return self.data == value
-    
-    def set_short(self, value): # Sets the shorter path name
-        self.shortPath = value
+	def get_hash(self): # Returns hash
+		return self.hash
 
-    def printNode(self):
-        print("Original\tPath\t\tDelete\tCopy\tSource\t\tDestination")
-        print(("YES" if self.original else "NO") +"\t\t"+ self.shortPath,end="\t")
-        print(("YES" if self.delete else "NO"), end="\t")
-        print(self.origin +"\t" +  self.dest)
+	def has_value(self, value): # Compares the value with node value
+		return self.data == value
+	
+	def set_short(self, value): # Sets the shorter path name
+		self.shortPath = value
 
-    def update(self):
-        self.delete = self.origin != self.dest and self.dest != "-"
-        self.original = self.dest == "-" and self.origin == "-"
-        
+	def printNode(self): # Print data about nodes
+		print("Original\tPath\t\tDelete\tCopy\tSource\t\tDestination")
+		print(("YES" if self.original else "NO") +"\t\t"+ self.shortPath,end="\t")
+		print(("YES" if self.delete else "NO"), end="\t")
+		print(self.origin +"\t" +  self.dest)
+
+	def update(self): # Update some values (Makes easier to read)
+		self.delete = self.origin != self.dest and self.dest != "-"
+		self.original = self.dest == "-" and self.origin == "-"
+		
 # The linked list
 class SingleLinkedList:
-    def __init__(self): 
-        self.head = None # Making a null first pointer
-        self.tail = None
+	def __init__(self): 
+		self.head = None # Making a null first pointer
+		self.tail = None
 
-    def add_list_item(self, item): # Adds item to the end of the list
-        if not isinstance(item, ListNode):
-            item = ListNode(item)
-        if self.head is None:
-            self.head = item
-        else:
-            self.tail.next = item
-        self.tail = item
+	def add_list_item(self, item): # Adds item to the end of the list
+		if not isinstance(item, ListNode):
+			item = ListNode(item)
+		if self.head is None:
+			self.head = item
+		else:
+			self.tail.next = item
+		self.tail = item
 
-    def list_length(self): # Returns size of list
-        count = 0
-        current_node = self.head
-        while current_node is not None:
-            count = count + 1
-            current_node = current_node.next
-        return count
+	def list_length(self): # Returns size of list
+		count = 0
+		current_node = self.head
+		while current_node is not None:
+			count = count + 1
+			current_node = current_node.next
+		return count
 
-    def printList(self): # Prints Node values
-        current_node = self.head        
-        while current_node is not None:
-            print(current_node.data + " " + current_node.path)
-            current_node = current_node.next
+	def printList(self): # Prints Node values
+		current_node = self.head        
+		while current_node is not None:
+			print(current_node.data + " " + current_node.path)
+			current_node = current_node.next
 
-    def unordered_search (self, value): # Searches List for Node with data equal to value        
-        # define current_node
-        current_node = self.head
-        # define position
-        node_id = 1
-        # define list of results
-        results = []
-        while current_node is not None:
-            if current_node.has_value(value):
-                return node_id
-            # jump to the linked node
-            current_node = current_node.next
-            node_id = node_id + 1
-        return -1
+	def unordered_search (self, value): # Searches List for Node with data equal to value        
+		current_node = self.head # Starting at the head
+		node_id = 1 # Position
+		while current_node is not None:
+			if current_node.has_value(value): # First found index of matching value
+				return node_id
+			current_node = current_node.next # Move to next node
+			node_id = node_id + 1
+		return -1
 
-    def remove_list_item_by_id(self, item_id): # Remove node with id for data
-        current_id = 1
-        current_node = self.head
-        previous_node = None
-        while current_node is not None:
-            if current_id == item_id:
-                # if this is the first node (head)
-                if previous_node is not None:
-                    previous_node.next = current_node.next
-                else:
-                    self.head = current_node.next
-                    # we don't have to look any further
-                    return
-            # needed for the next iteration
-            previous_node = current_node
-            current_node = current_node.next
-            current_id = current_id + 1
-        return
+	def remove_list_item_by_id(self, item_id): # Remove node with id for data
+		current_id = 1
+		current_node = self.head
+		previous_node = None
+		while current_node is not None:
+			if current_id == item_id:
+				# if this is the first node (head)
+				if previous_node is not None:
+					previous_node.next = current_node.next
+				else:
+					self.head = current_node.next
+					# we don't have to look any further
+					return
+			# needed for the next iteration
+			previous_node = current_node
+			current_node = current_node.next
+			current_id = current_id + 1
+		return
 
 # MD5 a file based on chunks
 def md5_a_file(filePath, block_size=128 * 16):
@@ -194,10 +190,41 @@ def getFiles(fp): # Files Path
 	print(x)
 	return x
 
+def findNames(fl): # Finds the compatable file names
+	result = []
+	for f in fl:
+		a = f.rfind(" ")
+		tempFile = f[:a]
+		if tempFile in result:
+			print(tempFile + " is already valid archive")
+		else:
+			print(tempFile + " is a new archive adding to list")
+			result.append(tempFile)
+	return result
+
 def main():
 	workspace = input("Enter the folder reading from: ")
 	filesList = printFiles(workspace, '*.zip') # Get valid zip files
-	
+	resultName = findNames(filesList)
+	if len(resultName) == 1: # Only one option
+		tempName = resultName[0]
+		print("Archive of " + tempName + " is being assembled")
+	else: # Must choose option
+		print("How lucky for us. We are given " + len(resultName) + " options")
+		print("Select one of the ones below")
+		choice = -1
+		while True:
+			for rn in range(0, len(resultName), 1):
+				 print(str(rn) + resultName[rn])
+			choice = input("Enter the number of the file you want: ")
+			if choice >= 0 and choice < len(resultName):
+				print("Thanks for entering a valid number")
+			else: # Not by number lets see if it is filename
+				
+			
+		for rn in resultName:
+
+
 	sets = sortDates(filesList)
 	# Need to adjust for multiple states of files (Example Files.zip and iTunes.zip)
 
@@ -293,7 +320,7 @@ def main():
 			print(sets[i] + " has been compresssed")	
 			myzip.close()
 	return 1
-
+	
 #		myzip.write(folder + "\\changes.abby")
 #		myzip.write(folder + "\\a.txt")
 
