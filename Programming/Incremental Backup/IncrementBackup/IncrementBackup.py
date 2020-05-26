@@ -125,24 +125,22 @@ def printFiles(folderpath, pattern):
 	return x
 
 # Sorts files based on the date instead of names (2-1-20 is before 2-10-20)
-def sortDates(x): 
+def sortDates(files): 
 	fin = []
 	i = 0
-	fileName = x[0].rfind(" ")
-	while len(x) != 0:
-		min = x[0]
+	fileName = files[0].rfind(" ") 
+	while len(files) != 0:
+		min = files[0]
 		minTime = min[fileName:].split("-")
-		for d in x:
-			tx = d[fileName:].split("-")
-
-		# Can simplify by to say months and days
-			if int(tx[2][:-4]) <= int(minTime[2][:-4]): # TX month is earlier or same as minimum
-				if int(tx[0]) <= int(minTime[0]): # TX month is earlier or same as minimum
-					if int(tx[1]) < int(minTime[1]): # Tx day is earlier than minimum
+		for d in files:
+			curTime = d[fileName:].split("-")
+			if int(curTime[2][:-4]) <= int(minTime[2][:-4]): # TX Year is earlier or same as minimum
+				if int(curTime[0]) <= int(minTime[0]): # TX month is earlier or same as minimum
+					if int(curTime[1]) < int(minTime[1]): # Tx day is earlier than minimum
 						min = d
 						minTime = d[fileName:].split("-")
 		fin.append(min) # Put minimum into array
-		x.remove(min) # Remove minimum
+		files.remove(min) # Remove minimum
 	return fin
 
 # Sorting the array1 based on the numbers in array2
@@ -191,20 +189,18 @@ def getFiles(fp): # Files Path
 		elif os.path.isfile(cur):
 			x.append(cur)
 		else: # For errors
-#			print(os.path.listdir(cur))
-#			print(cur)
 			x.append(cur)
 		y.remove(cur)
 	print(x)
 	return x
 
 def main():
-	workspace = "TestData2"
-	# os.chdir(workspace) # Created issues
-	filesList = printFiles('TestData2', '*.zip') # Get valid zip files
+	workspace = input("Enter the folder reading from: ")
+	filesList = printFiles(workspace, '*.zip') # Get valid zip files
+	
+	sets = sortDates(filesList)
 	# Need to adjust for multiple states of files (Example Files.zip and iTunes.zip)
 
-	sets = sortDates(filesList) # This sorting works
 	# Since they are zip have to extract them
 	# Adjust later for temporary files
 	for i in range(0, len(sets) , 1):
