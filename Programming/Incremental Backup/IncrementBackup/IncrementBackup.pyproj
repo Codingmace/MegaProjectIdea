@@ -26,6 +26,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="IncrementBackup.py" />
+    <Compile Include="module1.py" />
+    <Compile Include="module2.py" />
+    <Compile Include="module3.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.8-32" />
