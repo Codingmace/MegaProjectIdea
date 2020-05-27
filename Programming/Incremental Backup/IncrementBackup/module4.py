@@ -1,56 +1,39 @@
+from PyQt5.QtWidgets import QMessageBox, QLineEdit
+from PyQt5.QtGui import QIcon
 
 import sys
-
-from PyQt5.QtWidgets import (QPushButton, QWidget,
-                             QLineEdit, QApplication)
+import os
 
 
-class Button(QPushButton):
+class FileEdit(QLineEdit):
+    def __init__(self, parent):
+        super(FileEdit, self).__init__(parent)
 
-    def __init__(self, title, parent):
-        super().__init__(title, parent)
+        self.setDragEnabled(True)
 
-        self.setAcceptDrops(True)
+    def dragEnterEvent(self, event):
+        data = event.mimeData()
+        urls = data.urls()
+        if urls and urls[0].scheme() == 'file':
+            event.acceptProposedAction()
 
-    def dragEnterEvent(self, e):
+    def dragMoveEvent(self, event):
+        data = event.mimeData()
+        urls = data.urls()
+        if urls and urls[0].scheme() == 'file':
+            event.acceptProposedAction()
 
-        if e.mimeData().hasFormat('text/plain'):
-            e.accept()
-        else:
-            e.ignore()
-
-    def dropEvent(self, e):
-
-        self.setText(e.mimeData().text())
-
-
-class Example(QWidget):
-
-    def __init__(self):
-        super().__init__()
-
-        self.initUI()
-
-    def initUI(self):
-
-        edit = QLineEdit('', self)
-        edit.setDragEnabled(True)
-        edit.move(30, 65)
-
-        button = Button("Button", self)
-        button.move(190, 65)
-
-        self.setWindowTitle('Simple drag and drop')
-        self.setGeometry(300, 300, 300, 150)
-
-
-def main():
-
-    app = QApplication(sys.argv)
-    ex = Example()
-    ex.show()
-    app.exec_()
-
-
-if __name__ == '__main__':
-    main()
+    def dropEvent(self, event):
+        data = event.mimeData()
+        urls = data.urls()
+        if urls and urls[0].scheme() == 'file':
+            filepath = str(urls[0].path())[1:]
+            # any file type here
+            if filepath[-4:].upper() == ".txt":
+                self.setText(filepath)
+            else:
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Error: Invalid File")
+                dialog.setText("Only .txt files are accepted")
+                dialog.setIcon(QMessageBox.Warning)
+                dialog.exec_()
