@@ -34,6 +34,9 @@
     <Compile Include="module4.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="module5.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.8-32" />

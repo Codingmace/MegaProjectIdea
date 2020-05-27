@@ -5,7 +5,6 @@ import fnmatch
 import hashlib
 import sys
 import shutil
-import cv2
 
 # Class for the nodes
 class ListNode:

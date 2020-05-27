@@ -4,36 +4,37 @@ from PyQt5.QtGui import QIcon
 import sys
 import os
 
+""" Doesn't display anything """
 
 class FileEdit(QLineEdit):
-    def __init__(self, parent):
-        super(FileEdit, self).__init__(parent)
+	def __init__(self, parent):
+		super(FileEdit, self).__init__(parent)
 
-        self.setDragEnabled(True)
+		self.setDragEnabled(True)
 
-    def dragEnterEvent(self, event):
-        data = event.mimeData()
-        urls = data.urls()
-        if urls and urls[0].scheme() == 'file':
-            event.acceptProposedAction()
+	def dragEnterEvent(self, event):
+		data = event.mimeData()
+		urls = data.urls()
+		if urls and urls[0].scheme() == 'file':
+			event.acceptProposedAction()
 
-    def dragMoveEvent(self, event):
-        data = event.mimeData()
-        urls = data.urls()
-        if urls and urls[0].scheme() == 'file':
-            event.acceptProposedAction()
+	def dragMoveEvent(self, event):
+		data = event.mimeData()
+		urls = data.urls()
+		if urls and urls[0].scheme() == 'file':
+			event.acceptProposedAction()
 
-    def dropEvent(self, event):
-        data = event.mimeData()
-        urls = data.urls()
-        if urls and urls[0].scheme() == 'file':
-            filepath = str(urls[0].path())[1:]
-            # any file type here
-            if filepath[-4:].upper() == ".txt":
-                self.setText(filepath)
-            else:
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Error: Invalid File")
-                dialog.setText("Only .txt files are accepted")
-                dialog.setIcon(QMessageBox.Warning)
-                dialog.exec_()
+	def dropEvent(self, event):
+		data = event.mimeData()
+		urls = data.urls()
+		if urls and urls[0].scheme() == 'file':
+			filepath = str(urls[0].path())[1:]
+			# any file type here
+			if filepath[-4:].upper() == ".txt":
+				self.setText(filepath)
+			else:
+				dialog = QMessageBox()
+				dialog.setWindowTitle("Error: Invalid File")
+				dialog.setText("Only .txt files are accepted")
+				dialog.setIcon(QMessageBox.Warning)
+				dialog.exec_()
