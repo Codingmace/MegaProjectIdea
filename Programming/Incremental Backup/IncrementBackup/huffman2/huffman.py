@@ -367,13 +367,14 @@ if __name__ == "__main__":
 		freq.append(d)
 		freqs.setdefault(' ',0)
 #		freqs[c[0]] +=d
-		total += d
+		total += d / 1000000
 		print("Line{}: {}".format(count, line.strip())) 
 		freqs = {}
 		text = splits[0]
 		for e in c:
 			freqs.setdefault(e, 0)
 			freqs[e] += d
+	print(total)
 	file1.close() 
 
 	in_str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit nulla et sodales dapibus. Nullam mauris orci"

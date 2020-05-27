@@ -365,6 +365,14 @@ def compress():
 	shutil.rmtree("Output") # Cleans up
 
 def decompress():
+	# Process to decompress
+	"""
+		Lots of checking
+		Unzip files if there is issue go to the next one
+		Because there should be an exception when referencing so have toignore that
+		zips also need to be put back in order and 1,2,3,4..... folders
+	"""
+
 #	workspace = input("Enter the folder reading from: ")
 	workspace = "TestData_comp"
 	sets = printFiles(workspace, '*.zip') # Get valid zip files
@@ -457,9 +465,11 @@ def main():
 		print("Time to quit")
 		return 0
 
+	# Could add huffman algorithm but right now that is too much work
+
 # Write the decompress functions
 # Write compression of the files using a binary tree and compressing the dots
-# Huffman algorithem with the nodes based out of 100 and made
+# Huffman algorithem with the nodes based out of 100 and made Too little of a number
 # Decompressing everything
 # A user interface that way it is easy to use
 # Test multiple times to make sure that it works
