@@ -330,44 +330,6 @@ class HuffmanTree:
 
 
 if __name__ == "__main__":
-#	L =  ["Geeks\n", "for\n", "Geeks\n"]
-#	# Writing to a file 
-#	file1 = open('myfile.txt', 'w') 
-#	file1.writelines((L)) 
-#	file1.close() 
-
-	# Using readline() 
-	file1 = open('huffman2\\frequency.txt', 'r') 
-	count = 0
-	total = 0
-	freqs = {}
-	letter = ['\\', '\n'] # Need to adjust later for accuracy
-	freq = [10000, 7000] # Need to adjust later
-	print("Frequency Table")
-	while True: 
-		count += 1
-		# Get next line from file 
-		line = file1.readline()
-		print(l)
-
-		# if line is empty 
-		# end of file is reached 
-		if not line: 
-			break
-		split = line.split(' ')
-		letter.append(split[0])
-		freq.append(int(split[1]))
-		
-		freq[split[0]] = int(split[1])
-#		for c in text:
-#			freq.setdefault(c, 0)
-#			freq[c] += 1
-
-		total += int(split[1])
-		print("Line{}: {}".format(count, line.strip())) 
-
-	file1.close() 
-
 	in_str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit nulla et sodales dapibus. Nullam mauris orci"
 	in_str = in_str * 500
 
