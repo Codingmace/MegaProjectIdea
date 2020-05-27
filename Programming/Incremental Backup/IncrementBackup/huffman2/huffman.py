@@ -328,6 +328,8 @@ class HuffmanTree:
 	def __repr__(self):
 		return "<HuffmanTree: head={}>".format(self.head)
 
+def StringToChars(word):
+	return [char for char in word]
 
 if __name__ == "__main__":
 #	L =  ["Geeks\n", "for\n", "Geeks\n"]
@@ -348,24 +350,30 @@ if __name__ == "__main__":
 		count += 1
 		# Get next line from file 
 		line = file1.readline()
-		print(l)
 
 		# if line is empty 
 		# end of file is reached 
 		if not line: 
 			break
-		split = line.split(' ')
-		letter.append(split[0])
-		freq.append(int(split[1]))
-		
-		freq[split[0]] = int(split[1])
-#		for c in text:
-#			freq.setdefault(c, 0)
-#			freq[c] += 1
-
-		total += int(split[1])
+		splits = line.split(' ')
+		c = StringToChars(splits[0][0])
+#		e = ord(list(splits[0])[0])
+#		e= chr(e)
+#		print(type(c))
+		print(splits[0][0])
+#		print(type(c[0]))
+		d = int(splits[1])
+		letter.append(c)
+		freq.append(d)
+		freqs.setdefault(' ',0)
+#		freqs[c[0]] +=d
+		total += d
 		print("Line{}: {}".format(count, line.strip())) 
-
+		freqs = {}
+		text = splits[0]
+		for e in c:
+			freqs.setdefault(e, 0)
+			freqs[e] += d
 	file1.close() 
 
 	in_str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit nulla et sodales dapibus. Nullam mauris orci"
