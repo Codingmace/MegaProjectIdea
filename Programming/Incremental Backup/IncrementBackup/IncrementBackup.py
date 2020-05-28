@@ -262,16 +262,7 @@ def compress():
 		dirName = "Output\\" + str(i)
 		if not op.exists(dirName):
 			os.makedirs(dirName) # For multiple
-#			print("Directory " , dirName ,  " has been created ")
 
-#			print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
-#			zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
-#			print("Extraction of " + sets[i] + " complete")
-
-#		else:
-#			print("Directory " , dirName ,  " already exists")
-
-#		print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
 		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 #		print("Extraction of " + sets[i] + " complete")
 		print(str((i/(len(sets)))*100)+ "  %")
@@ -327,7 +318,6 @@ def compress():
 		os.mkdir(workspace + "_comp\\")
 	os.chdir(workspace + "_comp\\")
 	changesFile = open("stat.txt", "w") # Changes File
-	#print(os.getcwd())
 
 	for i in range(0, len(sets) , 1): # Can add something here to make sure it doesn't miss any deleted
 		deleteExist = True
@@ -353,7 +343,6 @@ def compress():
 					arcName = alf.shortPath[alf.shortPath.find("\\")+1:]
 					myzip.write(alf.path, arcName)
 					allFiles.remove(alf)
-#			print(os.getcwd())
 			changesFile.flush()
 			alf = allFiles[len(allFiles)-1]
 			if alf.foldNumb == i: # For the last element
@@ -385,7 +374,7 @@ def compress():
 		del workspace
 	os.chdir("..")
 	print(os.getcwd())
-#	shutil.rmtree("Output") # Cleans up
+	shutil.rmtree("Output") # Cleans up
 
 	""" THis function is not complete, It was semi-editited from a copy of the compression method """
 def decompress():
