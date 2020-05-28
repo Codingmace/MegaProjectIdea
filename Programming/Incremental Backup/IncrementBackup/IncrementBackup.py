@@ -115,7 +115,7 @@ def printFiles(folderpath, pattern):
 			x.append(entry)
 		if op.isdir(entry): # This is if you have zip files further than target folder
 			print("I found another folder. Might hold another zip file.")
-			print("I am lazy though so I am going to ignore it")
+#			print("I am lazy though so I am going to ignore it")
 	return x
 
 """ Sorts files based on the date instead of names
@@ -161,10 +161,10 @@ def printGrid(grid):
 def getFiles(fp): # Files Path
 	x = []
 	y = os.listdir(fp)
-	print(op.abspath(fp))
+#	print(op.abspath(fp))
 	while len(y) > 0:
 		cur = y[0]
-		print(op.abspath(cur))
+#		print(op.abspath(cur))
 		if op.isdir(cur):
 			tmp = os.listdir(cur)
 			for t in tmp:
@@ -174,7 +174,7 @@ def getFiles(fp): # Files Path
 		else: # For errors
 			x.append(cur)
 		y.remove(cur)
-	print(x)
+#	print(x)
 	return x
 
 """ Returns the file name without the date or extension """
@@ -186,11 +186,13 @@ def findNames(fl): # Finds the compatable file names
 	result = []
 	for f in fl:
 		tempFile = parseName(f)
-		if tempFile in result:
-			print(tempFile + " is already valid archive")
-		else:
-			print(tempFile + " is a new archive adding to list")
+		if tempFile not in result:
 			result.append(tempFile)
+#		if tempFile in result:
+#			print(tempFile + " is already valid archive")
+#		else:
+#			print(tempFile + " is a new archive adding to list")
+#			result.append(tempFile)
 	return result
 
 """ Compresses the file main file """
@@ -260,25 +262,30 @@ def compress():
 		dirName = "Output\\" + str(i)
 		if not op.exists(dirName):
 			os.makedirs(dirName) # For multiple
-			print("Directory " , dirName ,  " has been created ")
+#			print("Directory " , dirName ,  " has been created ")
+
 #			print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
 #			zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
 #			print("Extraction of " + sets[i] + " complete")
-		else:
-			print("Directory " , dirName ,  " already exists")
-		print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
+
+#		else:
+#			print("Directory " , dirName ,  " already exists")
+
+#		print("Extracting files from "+ sets[i] + " into the folder path of " + dirName)
 		zipfile.ZipFile(workspace + "\\" + sets[i]).extractall(dirName)
-		print("Extraction of " + sets[i] + " complete")
+#		print("Extraction of " + sets[i] + " complete")
+		print(str((i/(len(sets)))*100)+ "  %")
 	
 	grid = []
 	fileContent = [] # For what is going to be written to the file
 	os.chdir("Output\\0")
 	# Getting all the files set into nodes and stuff
+	print("Creating Nodes and adding to an array of LinkedList")
 	for i in range(0, len(sets) , 1):
 		os.chdir("..\\" + str(i))
-		print("Changing workspace to " + os.getcwd())
+		# print("Changing workspace to " + os.getcwd())
 		baseFiles = getFiles(".") # What comparing everything to
-		print("Creating Nodes and adding to an array of LinkedList")
+#		print("Creating Nodes and adding to an array of LinkedList")
 		for b in baseFiles: 
 			q = ListNode(b,i)
 			itemIndex = linkedFind(grid, q.get_data())
@@ -320,18 +327,34 @@ def compress():
 		os.mkdir(workspace + "_comp\\")
 	os.chdir(workspace + "_comp\\")
 	changesFile = open("stat.txt", "w") # Changes File
+	delFile = open("del.txt", "w") # Deleted Files
 	print(os.getcwd())
 
-	for i in range(0, len(sets) , 1):
-		for af in allFiles: # Delete the unwanted files
-			if af.delete:
-					print("removing the file at " + af.path)
+	for i in range(0, len(sets) , 1): # Can add something here to make sure it doesn't miss any deleted
+		deleteExist = True
+		while deleteExist:
+			deleteExist = False
+			for af in allFiles: # Delete the unwanted files
+				if af.delete:
+					deleteExist = True
+#					print("removing the file at " + af.path)
 					changesFile.write(af.origin + " " + af.dest + "\n")
 					os.remove(af.path)
 					allFiles.remove(af)
-			if af.original:
-					print("Keeping the file at " + af.path)
+				elif af.original:
+#					print("Keeping the file at " + af.path)
+					delFile.write(af.shortPath + "\n")
+		af = allFiles[len(allFiles)-1]
+		if af.delete: # For the last file
+#			print("removing the file at " + af.path)
+			changesFile.write(af.origin + " " + af.dest + "\n")
+			os.remove(af.path)
+			allFiles.remove(af)
+#		elif af.original: # For debug
+#			print("Keeping the file at " + af.path)
+#			delFile.write(af.shortPath + "\n")
 		changesFile.flush()
+
 		with zipfile.ZipFile(sets[i], 'w') as myzip: # Compressing Files again
 			for alf in allFiles:
 				if alf.foldNumb == i:
@@ -340,9 +363,18 @@ def compress():
 					allFiles.remove(alf)
 			print(os.getcwd())
 			changesFile.flush()
+			alf = allFiles[len(allFiles)-1]
+			if alf.foldNumb == i: # For the last element
+				arcName = alf.shortPath[alf.shortPath.find("\\")+1:]
+				myzip.write(alf.path, arcName)
+				allFiles.remove(alf)
 			myzip.write("stat.txt", "stat.abby")
+
+		print(str((i/(len(sets)))*100)+ "  %")
 	changesFile.flush()
 	changesFile.close()
+	delFile.flush()
+	delFile.close()
 	if False: # Cleaning
 		del af
 		del alf
@@ -361,7 +393,7 @@ def compress():
 		del workspace
 	os.chdir("..")
 	print(os.getcwd())
-	shutil.rmtree("Output") # Cleans up
+#	shutil.rmtree("Output") # Cleans up
 
 	""" THis function is not complete, It was semi-editited from a copy of the compression method """
 def decompress():
@@ -372,8 +404,8 @@ def decompress():
 		Because there should be an exception when referencing so have toignore that
 		zips also need to be put back in order and 1,2,3,4..... folders
 	"""
-#	workspace = input("Enter the folder reading from: ")
-	workspace = "TestData_comp"
+	workspace = input("Enter the folder reading from: ")
+#	workspace = "TestData_comp"
 	sets = printFiles(workspace, '*.zip') # Get valid zip files
 	resultName = findNames(sets)
 	print()
@@ -455,10 +487,11 @@ def main():
 	print("1. Compress")
 	print("2. Decompress")
 	choices = input("Enter your choice:")
-	if choices == 1:
+	if choices == "1":
 		compress()
-	elif choices == 2:
-		decompress()
+	elif choices == "2":
+		print("Sorry that this one is almost done. Requires a little bit of code. Check the notes for what is needed")
+#		decompress()
 	else:
 		print("That is not a valid option. That sucks")
 		print("Time to quit")

@@ -25,8 +25,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="huffman2\huffman.py" />
-    <Compile Include="huffman2\priority_queue.py" />
     <Compile Include="IncrementBackup.py" />
     <Compile Include="module1.py" />
     <Compile Include="module2.py" />
@@ -42,13 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.8-32" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="huffman2\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="huffman2\frequency.txt" />
-    <Content Include="huffman2\test" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
