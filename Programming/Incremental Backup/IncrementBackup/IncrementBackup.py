@@ -327,8 +327,7 @@ def compress():
 		os.mkdir(workspace + "_comp\\")
 	os.chdir(workspace + "_comp\\")
 	changesFile = open("stat.txt", "w") # Changes File
-	delFile = open("del.txt", "w") # Deleted Files
-	print(os.getcwd())
+	#print(os.getcwd())
 
 	for i in range(0, len(sets) , 1): # Can add something here to make sure it doesn't miss any deleted
 		deleteExist = True
@@ -337,22 +336,15 @@ def compress():
 			for af in allFiles: # Delete the unwanted files
 				if af.delete:
 					deleteExist = True
-#					print("removing the file at " + af.path)
 					changesFile.write(af.origin + " " + af.dest + "\n")
 					os.remove(af.path)
 					allFiles.remove(af)
-				elif af.original:
-#					print("Keeping the file at " + af.path)
-					delFile.write(af.shortPath + "\n")
+
 		af = allFiles[len(allFiles)-1]
 		if af.delete: # For the last file
-#			print("removing the file at " + af.path)
 			changesFile.write(af.origin + " " + af.dest + "\n")
 			os.remove(af.path)
 			allFiles.remove(af)
-#		elif af.original: # For debug
-#			print("Keeping the file at " + af.path)
-#			delFile.write(af.shortPath + "\n")
 		changesFile.flush()
 
 		with zipfile.ZipFile(sets[i], 'w') as myzip: # Compressing Files again
@@ -361,7 +353,7 @@ def compress():
 					arcName = alf.shortPath[alf.shortPath.find("\\")+1:]
 					myzip.write(alf.path, arcName)
 					allFiles.remove(alf)
-			print(os.getcwd())
+#			print(os.getcwd())
 			changesFile.flush()
 			alf = allFiles[len(allFiles)-1]
 			if alf.foldNumb == i: # For the last element
