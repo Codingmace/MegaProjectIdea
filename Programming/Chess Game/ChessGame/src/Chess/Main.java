@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 
+import java.io.File;
+import java.io.FileWriter;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +24,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     /**
      * Our version counter
      */
-    final public static String VERSION = "1.4";
+    final public static String VERSION = "1.4.1";
 
     /**
      * The omni-present Chess reference, used nearly everywhere for calculations
@@ -222,7 +225,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     MenuItem menu_Game_New;
     MenuItem menu_Game_SetPosition;
     MenuItem menu_Game_Takeback;
-    MenuItem menu_Game_Save;
     MenuItem menu_Game_Load;
     MenuItem menu_Game_Exit;
 
@@ -648,7 +650,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             SetupBoard();
         } else if (source == menu_Game_Load || source == butt_LoadGame) {
             LoadGame();
-        } else if (source == menu_Game_Save || source == butt_SaveGame) {
+        } else if (source == butt_SaveGame) {
             SaveGame();
         } else if (source == butt_Help) {
             ShowHelpDialog();
@@ -999,32 +1001,21 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     static String SaveTitle = "Save Game";
 
     /**
-     * This function requests a game description from the user and if it is
-     * unique, saves the current game state in the data source via an INSERT SQL
-     * command. If the game description is duplicate, the old game will be
-     * overridden via an UPDATE SQL command.
+     * Writes to folder the board stuff
+     * Need to add to check for the file and folder exist to not have errors
      */
     public void SaveGame() {
-        if (db == null) {
-            alert("Database Error", "Data Source not available.");
-            return;
-        }
-        if (db.dataBase == null) {
-            alert("Database Error", "Data Source not available.");
-            return;
-        }
-        if (!db.dataBase.isConnected()) {
-            alert("Database Error", "Data Source not available.");
-            return;
-        }
+        /**
+         * Check for the file and if the folder exist
+         */
+//        System.out.println(Arrays.toString(paintPos.board));
 
         // Create the labels and text fields.
         JLabel gameDescLabel = new JLabel("Game Description: ", JLabel.RIGHT);
         JTextField gameDescField = new JTextField(getTitle());
 
         JPanel savePanel = new JPanel(false);
-        savePanel.setLayout(new BoxLayout(savePanel,
-                BoxLayout.X_AXIS));
+        savePanel.setLayout(new BoxLayout(savePanel, BoxLayout.X_AXIS));
 
         JPanel namePanel = new JPanel(false);
         namePanel.setLayout(new GridLayout(1, 1));
@@ -1041,38 +1032,20 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, SaveOptionNames, SaveOptionNames[0]) == 0) {
             String szPos = Chess.encodePosition(Chess.pos);
+            System.out.println(szPos);
+            System.out.println("Saving game...");
             try {
-                System.out.println("Saving game...");
-
-                // check if we are over-riding an existing game
-                PreparedStatement selPS = db.dataBase.connection.prepareStatement("SELECT * FROM Games WHERE Description=?");
-                selPS.setString(1, gameDescField.getText());
-                ResultSet rs = selPS.executeQuery();
-
-                PreparedStatement pstmt;
-
-                if (rs.next()) {
-                    System.out.println("Overriding old saved game...");
-                    pstmt = db.dataBase.connection.prepareStatement("UPDATE Games SET Description=?,Position=? WHERE ID=?");
-                    pstmt.setInt(3, rs.getInt("ID"));
-                } else {
-                    System.out.println("Saving new game...");
-                    pstmt = db.dataBase.connection.prepareStatement("INSERT INTO Games (Description,Position) VALUES(?,?)");
-                }
-
-                pstmt.setString(1, gameDescField.getText());
-                pstmt.setString(2, szPos);
-
-                pstmt.execute();
-
-            } catch (SQLException ex) {
-                System.out.println("Error saving game.");
-                System.out.println("SaveGame() : " + ex.toString());
+                FileWriter fw = new FileWriter(new File("Saved\\" + SaveTitle));
+                fw.write(szPos);
+                fw.flush();
+                fw.close();
+            } catch (Exception e) {
+                System.out.println("most likely ran into the error of file problems");
+                System.err.print("shit");
             }
             setTitle(gameDescField.getText());
             System.out.println("Game saved.");
         }
-
     }
 
     /**
@@ -1152,13 +1125,13 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         butt_NewGame.addActionListener(this);
         toolPanel.add(butt_NewGame);
 
-        butt_LoadGame = new JButton(new ImageIcon(toolbarImages[1]));
-        butt_LoadGame.addActionListener(this);
-        toolPanel.add(butt_LoadGame);
-
         butt_SaveGame = new JButton(new ImageIcon(toolbarImages[2]));
         butt_SaveGame.addActionListener(this);
         toolPanel.add(butt_SaveGame);
+        
+        butt_LoadGame = new JButton(new ImageIcon(toolbarImages[1]));
+        butt_LoadGame.addActionListener(this);
+        toolPanel.add(butt_LoadGame);
 
         butt_Takeback = new JButton(new ImageIcon(toolbarImages[3]));
         butt_Takeback.addActionListener(this);
@@ -1168,6 +1141,9 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         butt_SetupBoard.addActionListener(this);
         toolPanel.add(butt_SetupBoard);
 
+        /**
+         * ADJUST THIS TO BE FLIP BOARD
+         */
         butt_Help = new JButton(new ImageIcon(toolbarImages[5]));
         butt_Help.addActionListener(this);
         toolPanel.add(butt_Help);
@@ -1201,11 +1177,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         menu_Game.add(menu_Game_Load);
         menu_Game_Load.addActionListener(this);
 
-        // Init Save Game Menu
-        menu_Game_Save = new MenuItem("Save Game");
-        menu_Game.add(menu_Game_Save);
-        menu_Game_Save.addActionListener(this);
-
         // Insert a separator between items and Exit
         menu_Game.addSeparator();
 
@@ -1213,26 +1184,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         menu_Game_Exit = new MenuItem("Exit");
         menu_Game.add(menu_Game_Exit);
         menu_Game_Exit.addActionListener(this);
-
-        // Options
-        menu_Options = new Menu("Options");
-        menuBar.add(menu_Options);
-
-        menu_Opt_Database = new MenuItem("Database Settings");
-        menu_Options.add(menu_Opt_Database);
-        menu_Opt_Database.addActionListener(this);
-
-        menu_Network = new Menu("Network");
-        menuBar.add(menu_Network);
-        menu_Network.setEnabled(false);
-
-        menu_Network_Host = new MenuItem("Host Game");
-        menu_Network.add(menu_Network_Host);
-        menu_Network_Host.addActionListener(this);
-
-        menu_Network_Connect = new MenuItem("Connect to Game");
-        menu_Network.add(menu_Network_Connect);
-        menu_Network_Connect.addActionListener(this);
 
         // View
         menu_View = new Menu("View");
@@ -1453,7 +1404,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         moveTable_scrollPane.createVerticalScrollBar();
         moveTable_scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        tabbedPane.add(new String("Move List"), moveTable_scrollPane);
+        tabbedPane.add("Move List", moveTable_scrollPane);
 
         // Set-up and add a graph of who's winning
         graphScroll.setViewportView(graph);
@@ -1461,7 +1412,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         graphScroll.createHorizontalScrollBar();
         graphScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         graphScroll.setBounds(0, 50, 200, TAB_HEIGHT);
-        tabbedPane.add(new String("Graph"), graphScroll);
+        tabbedPane.add("Graph", graphScroll);
 
         tabbedPane.setSelectedIndex(2);
 
@@ -1482,7 +1433,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Determine the user name to be displayed in the title bar
-        this.setTitle(System.getProperty("user.name") + " vs. Computer");
+        this.setTitle(System.getProperty("user.name") + "vsComp");
         this.setVisible(true);
 
         repaint();
@@ -1748,7 +1699,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     public void run() {
 
         while (!bQuit) {
-            if (chess.bThinking && bVisualThinking && !bSlowRedraws) {
+            if (Chess.bThinking && bVisualThinking && !bSlowRedraws) {
                 ++paintCount;
 
                 if (paintCount >= 4) // every 100 ms
@@ -1778,6 +1729,5 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     public static void main(String[] args) {
         Main frame = new Main();
         System.out.println("Welcome to Chessmate v" + VERSION);
-
     }
 }

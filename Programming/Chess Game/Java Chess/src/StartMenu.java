@@ -18,6 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/* SET A COMPUter option on the starting menu */
+
 public class StartMenu implements Runnable {
 
     @Override

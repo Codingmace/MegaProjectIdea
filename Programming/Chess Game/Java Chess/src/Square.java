@@ -13,6 +13,8 @@ public class Square extends JComponent {
     private Piece occupyingPiece;
     private boolean dispPiece;
 
+    
+    private boolean move; // For if it is a valid mobe select yellow
     private int xNum;
     private int yNum;
 
@@ -23,7 +25,7 @@ public class Square extends JComponent {
         this.dispPiece = true;
         this.xNum = xNum;
         this.yNum = yNum;
-
+        this.move = false;
         this.setBorder(BorderFactory.createEmptyBorder());
     }
 

@@ -178,6 +178,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         repaint();
     }
 
+    //  Need to be added to another method like clicked because the eequatoin is used when calculating.
+    // Also set the peices once you get them t o stop and 
     @Override
     public void mouseReleased(MouseEvent e) {
         Square sq = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
