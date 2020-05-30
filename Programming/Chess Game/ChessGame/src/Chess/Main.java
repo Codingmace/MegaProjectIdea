@@ -200,7 +200,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     JButton butt_SaveGame;
     JButton butt_Takeback;
     JButton butt_SetupBoard;
-    JButton butt_Help;
+    JButton butt_Flip;
 
     /**
      * A panel to contain the toolbar buttons
@@ -210,7 +210,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * @see butt_SaveGame
      * @see butt_Takeback
      * @see butt_SetupBoard
-     * @see butt_Help
+     * @see butt_Help#butt_Flip
      */
     Panel toolPanel;
 
@@ -237,9 +237,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     MenuItem menu_Network_Host;
     MenuItem menu_Network_Connect;
 
-    Menu menu_View;
-
-    MenuItem menu_View_Flip;
 
     /**
      * A timer to update the screen and the Game Tab for node information
@@ -250,11 +247,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * The AICaller class handles AI threading so nothing gets stucky.
      */
     static AICaller aiCaller;
-
-    /**
-     * An HTML Page for displaying our Chessmate HTML Help Page.
-     */
-    HTMLModule htmlModule;
 
     /**
      * hoverPiece holds the index of the piece currently picked up by the
@@ -652,8 +644,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             LoadGame();
         } else if (source == butt_SaveGame) {
             SaveGame();
-        } else if (source == butt_Help) {
-            ShowHelpDialog();
         } else if (source == menu_Game_Exit) {
             System.out.println("#Test to save game here!");
             Exit();
@@ -662,7 +652,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             System.out.println("DB");
             db = new Database(this);
         } else // View Menu here
-        if (source == menu_View_Flip) {
+        if (source == butt_Flip) {
             bFlipBoard = !bFlipBoard;
         } else if (source == chk_IterativeDeep) {
             chess.bIterativeDeepening = chk_IterativeDeep.isSelected();
@@ -1001,8 +991,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     static String SaveTitle = "Save Game";
 
     /**
-     * Writes to folder the board stuff
-     * Need to add to check for the file and folder exist to not have errors
+     * Writes to folder the board stuff Need to add to check for the file and
+     * folder exist to not have errors
      */
     public void SaveGame() {
         /**
@@ -1057,14 +1047,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      */
     public void SetupBoard() {
         bSetPosition = !bSetPosition;
-
         bPlaying = !bSetPosition;
-
-        if (bSetPosition) {
-            //	menu_Game_SetPosition.setLabel("Done Setting up Position");
-        } else {
-            //	menu_Game_SetPosition.setText(Set-up Position");
-        }
     }
 
     /**
@@ -1128,7 +1111,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         butt_SaveGame = new JButton(new ImageIcon(toolbarImages[2]));
         butt_SaveGame.addActionListener(this);
         toolPanel.add(butt_SaveGame);
-        
+
         butt_LoadGame = new JButton(new ImageIcon(toolbarImages[1]));
         butt_LoadGame.addActionListener(this);
         toolPanel.add(butt_LoadGame);
@@ -1144,9 +1127,9 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         /**
          * ADJUST THIS TO BE FLIP BOARD
          */
-        butt_Help = new JButton(new ImageIcon(toolbarImages[5]));
-        butt_Help.addActionListener(this);
-        toolPanel.add(butt_Help);
+        butt_Flip = new JButton(new ImageIcon(toolbarImages[5]));
+        butt_Flip.addActionListener(this);
+        toolPanel.add(butt_Flip);
 
         con.add(toolPanel);
 
@@ -1184,14 +1167,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         menu_Game_Exit = new MenuItem("Exit");
         menu_Game.add(menu_Game_Exit);
         menu_Game_Exit.addActionListener(this);
-
-        // View
-        menu_View = new Menu("View");
-        menuBar.add(menu_View);
-
-        menu_View_Flip = new MenuItem("Flip Board");
-        menu_View.add(menu_View_Flip);
-        menu_View_Flip.addActionListener(this);
 
         // Initialize Tabbed Pane, which contains game info
         tabbedPane = new JTabbedPane();
@@ -1661,30 +1636,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         // Now draw a stroke to the right of the board to indicate whose turn it is
         g.setColor(chess.bWhoseTurn ? Color.white : Color.black);
         g.fillRect(BOARD_WIDTH, yOffset, 10, BOARD_HEIGHT);
-
-    }
-
-    /**
-     * Pops up a non-modal help dialog for when the user gets stuck.
-     */
-    public void ShowHelpDialog() {
-        JFrame frame = new JFrame("Chessmate HTML Help");
-        frame.setSize(620, 440);
-        Container con = frame.getContentPane();
-
-        con.setLayout(new BorderLayout());
-
-        JPanel panel = new JPanel(new BorderLayout());
-//		JEditorPane jep = new JEditorPane("text/html","http://localhost/FreshCode/index.html");
-
-        System.out.println(System.getProperty("user.dir"));
-        htmlModule = new HTMLModule(panel, "../html/index.htm");//"../docs/html/index.html" );
-
-        frame.setSize(700, 500);
-
-        con.add(panel);//htmlModule.html );
-
-        frame.show();
 
     }
 
