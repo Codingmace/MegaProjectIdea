@@ -1,5 +1,14 @@
 package Chess;
 
+/**
+ * Things to do 
+ * Modify the Help icon to a the correct logo
+ * Modifying the load to do the correct thing
+ * Modify the load for a file selector for the path that is already set;
+ * Adjust the size of the window
+ */
+
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -7,9 +16,6 @@ import java.awt.image.*;
 import java.io.File;
 import java.io.FileWriter;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.TimerTask;
 import java.util.Vector;
 
@@ -33,14 +39,9 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     public static Chess chess;
 
     /**
-     * A variable for keeping the database connection.
-     */
-    private static Database db;
-
-    /**
      * Stores the width to which Chessmate should size its window.
      */
-    public static final int WINDOW_WIDTH = 500 + 220;
+    public static final int WINDOW_WIDTH = 500 + 220 ;
 
     /**
      * Stores the height to which Chessmate should size its window.
@@ -222,21 +223,10 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     // Menu Items
     Menu menu_Game;
 
-    MenuItem menu_Game_New;
-    MenuItem menu_Game_SetPosition;
     MenuItem menu_Game_Takeback;
-    MenuItem menu_Game_Load;
     MenuItem menu_Game_Exit;
 
     Menu menu_Options;
-
-    MenuItem menu_Opt_Database;
-
-    Menu menu_Network;
-
-    MenuItem menu_Network_Host;
-    MenuItem menu_Network_Connect;
-
 
     /**
      * A timer to update the screen and the Game Tab for node information
@@ -321,8 +311,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     ButtonGroup radioGroup = new ButtonGroup();
     JPanel radioPanel = new JPanel(new GridLayout(0, 1));
 
-    JCheckBox chk_VisualThinking = new JCheckBox("Visual Thinking (affects performance)", true);
-    static boolean bVisualThinking = true;
+    JCheckBox chk_VisualThinking = new JCheckBox("Visual Thinking (affects performance)", false);
+    static boolean bVisualThinking = false;
 
     JCheckBox chk_SlowRedraws = new JCheckBox("Slow Redraws (better performance)", false);
     static boolean bSlowRedraws = false;
@@ -381,35 +371,15 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         if (mx < 0 || my < 0 || sx >= 8 || sy >= 8) {
             return -1;
         }
-
-        //return ( (sy * 10) + sx );
         return (bFlipBoard ? (7 - sy) * 10 + (7 - sx) : sy * 10 + sx);
     }
 
     /**
-     * This closes the database connection and exits the program.
+     * Instead of close database could do a dialog box to ask if saving
+     *
+     * @return
      */
-    public void CloseDB() {
-        try {
-            if (db.dataBase != null) {
-                db.dataBase.close();
-            }
-
-            bQuit = true;
-
-        } catch (SQLException ex) {
-            System.out.println("Exit() :: SQLException: " + ex.toString());
-        }
-    }
-
     public int Exit() {
-
-        if (db != null) {
-            if (db.dataBase != null) {
-                CloseDB();
-            }
-        }
-
         dispose();
 
         System.exit(0);
@@ -454,8 +424,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             if (player == Chess.BLACK && checkPos.bBlackChecked) {
                 Chess.bThinking = false;
                 alert("Checkmate", "Black is checkmated.");
-            } else if (player == chess.WHITE && checkPos.bWhiteChecked) {
-                chess.bThinking = false;
+            } else if (player == Chess.WHITE && checkPos.bWhiteChecked) {
+                Chess.bThinking = false;
                 alert("Checkmate", "White is checkmated.");
             }
         }
@@ -607,7 +577,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
-        if (source == menu_Game_New || source == butt_NewGame) {
+        if (source == butt_NewGame) {
             NewGame();
         } else if (source == menu_Game_Takeback || source == butt_Takeback) {
             lastMove = new ChessMove();
@@ -631,16 +601,9 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             }
             repaint();
         } else // Menu stuff
-        if (source == menu_Game_SetPosition || source == butt_SetupBoard) {
-            if (bSetPosition) // saving
-            {
-                menu_Game_SetPosition.setLabel("Set-Up Position");
-            } else {
-                menu_Game_SetPosition.setLabel("Save Position");
-            }
-
+        if (source == butt_SetupBoard) {
             SetupBoard();
-        } else if (source == menu_Game_Load || source == butt_LoadGame) {
+        } else if ( source == butt_LoadGame) {
             LoadGame();
         } else if (source == butt_SaveGame) {
             SaveGame();
@@ -648,10 +611,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             System.out.println("#Test to save game here!");
             Exit();
         } else // Options Menu goes here
-        if (source == menu_Opt_Database) {
-            System.out.println("DB");
-            db = new Database(this);
-        } else // View Menu here
         if (source == butt_Flip) {
             bFlipBoard = !bFlipBoard;
         } else if (source == chk_IterativeDeep) {
@@ -860,23 +819,14 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * @see populateLoadGames
      */
     public void LoadGame() {
-        if (db == null) {
-            alert("Database Error", "Data Source not available.");
-            return;
-        }
-        if (db.dataBase == null) {
-            alert("Database Error", "Data Source not available.");
-            return;
-        }
-        if (!db.dataBase.isConnected()) {
-            alert("Database Error", "Data Source not available.");
-            return;
-        }
-
         dialog = new JDialog(this, "Load Game", true);
         dialog.setSize(600, 320);
         dialog.setResizable(false);
 
+        /**
+         * Write a file of what did In populate read in and put the placements
+         * on the grid
+         */
         gameTable.getColumnModel().getColumn(0).setHeaderValue("Game Description");
         gameTable.getColumnModel().getColumn(1).setHeaderValue("Date");
 
@@ -925,14 +875,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
                 if (index < 0) {
                     return;
                 }
-                OldGame og = (OldGame) loadGames.get(index);
-
-                try {
-                    PreparedStatement pstmt = db.dataBase.connection.prepareStatement("DELETE FROM Games WHERE ID=" + og.id);
-                    pstmt.execute();
-                } catch (SQLException ex) {
-                    System.out.println("LoadGame():Delete :: " + ex.toString());
-                }
 
                 populateLoadGames();
                 gameTable.repaint();
@@ -966,24 +908,9 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * @see loadGames
      */
     int populateLoadGames() {
-        try {
-            loadGames.clear();
-            ResultSet rs = db.dataBase.statement.executeQuery("SELECT * FROM Games");
-            //if ( rs.first() )
-            //	{
-            while (rs.next()) {
-                OldGame og = new OldGame();
-                og.id = rs.getInt("ID");
-                og.desc = rs.getString("Description");
-                og.szDate = rs.getString("Date");
-                og.pos = chess.decodePosition(rs.getString("Position"));
-                loadGames.add(og);
-            }// while ( rs.next() );
-            //	}
-        } catch (SQLException e) {
-            System.out.println("populateLoadGames() :: SQLException: " + e.toString());
-        }
-        System.out.println("#populateLoadGames() success");
+        System.out.println("Populating the field right now");
+        System.out.println("Clear the current game");
+        System.out.println("Write in what is in the file");
         return 0;
     }
 
@@ -1139,26 +1066,13 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
         menu_Game = new Menu("Game");
         menuBar.add(menu_Game);
 
-        // Init Save Game Menu
-        menu_Game_New = new MenuItem("New Game");
-        menu_Game.add(menu_Game_New);
-        menu_Game_New.addActionListener(this);
-
-        menu_Game_SetPosition = new MenuItem("Set-Up Position");
-        menu_Game.add(menu_Game_SetPosition);
-        menu_Game_SetPosition.addActionListener(this);
-
+        
         // Insert a separator between New Game and Takeback
         menu_Game.addSeparator();
 
         menu_Game_Takeback = new MenuItem("Takeback Move");
         menu_Game.add(menu_Game_Takeback);
         menu_Game_Takeback.addActionListener(this);
-
-        // Init Load Game Menu
-        menu_Game_Load = new MenuItem("Load Game");
-        menu_Game.add(menu_Game_Load);
-        menu_Game_Load.addActionListener(this);
 
         // Insert a separator between items and Exit
         menu_Game.addSeparator();
@@ -1413,8 +1327,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
 
         repaint();
         tabbedPane.repaint();
-
-        db = new Database(this);
 
         Thread mainThread;
         mainThread = new Thread(this);

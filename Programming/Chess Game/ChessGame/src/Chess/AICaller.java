@@ -56,7 +56,6 @@ public class AICaller extends Thread {
                 Chess.main.difficultySlider.setEnabled(false);
                 Chess.main.chk_IterativeDeep.setEnabled(false);
                 Chess.main.butt_SetupBoard.setEnabled(false);
-                Chess.main.menu_Game_SetPosition.setEnabled(false);
 
                 ChessPosition n = chess.playGame(Chess.pos, Chess.PROGRAM);
                 if (Chess.bThinking) {
@@ -66,7 +65,6 @@ public class AICaller extends Thread {
                 Chess.main.difficultySlider.setEnabled(true);
                 Chess.main.chk_IterativeDeep.setEnabled(true);
                 Chess.main.butt_SetupBoard.setEnabled(true);
-                Chess.main.menu_Game_SetPosition.setEnabled(true);
             }
 
             try {
