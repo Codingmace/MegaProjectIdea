@@ -1,11 +1,13 @@
 package Chess;
 
+
 /**
  * Things to do 
  * Modify the Help icon to a the correct logo
  * Modifying the load to do the correct thing
  * Modify the load for a file selector for the path that is already set;
  * Adjust the size of the window
+ * Change the size 
  */
 
 
@@ -15,6 +17,7 @@ import java.awt.image.*;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 
 import java.util.TimerTask;
 import java.util.Vector;
@@ -41,12 +44,12 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     /**
      * Stores the width to which Chessmate should size its window.
      */
-    public static final int WINDOW_WIDTH = 500 + 220 ;
+    public static final int WINDOW_WIDTH = 500 + 220; // 160 is the extra to width
 
     /**
      * Stores the height to which Chessmate should size its window.
      */
-    public static final int WINDOW_HEIGHT = 400 + 67 + 40;
+    public static final int WINDOW_HEIGHT = 400 + 67 + 40; // 160 is the extra to the height
 
     /**
      * The width of a chess board square, drawn as either light or dark.
@@ -138,7 +141,8 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * @see moveTable
      * @see moveTable_dataModel
      */
-    Vector moveList = new Vector();
+
+    ArrayList moveList = new ArrayList();
 
     /**
      * An abstract table model for rendering the moves list.
@@ -291,6 +295,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * @see strip
      */
     static Image images[]; // the constituent images
+
     /**
      * Holds the number of piece images in the image strip - should always be
      * 12.
@@ -367,8 +372,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
     int calcSquare(int mx, int my) {
         int sx = mx / TILE_WIDTH;
         int sy = my / TILE_HEIGHT;
-
-        if (mx < 0 || my < 0 || sx >= 8 || sy >= 8) {
+        if (mx < 0 || my < 0 || sx >= 8 || sy >= 8) { // Out of the grid
             return -1;
         }
         return (bFlipBoard ? (7 - sy) * 10 + (7 - sx) : sy * 10 + sx);
@@ -484,6 +488,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      *
      * @param e
      */
+
     @Override
     public void mouseReleased(MouseEvent e) {
         while (true) // a dummy for easy error-checking
@@ -532,6 +537,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      *
      * @param e
      */
+
     @Override
     public void mousePressed(MouseEvent e) {
         int x = e.getX() - HORZ_OFFSET; // ..BOARD_HORZ_OFFSET;
@@ -561,6 +567,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      *
      * @param e
      */
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == difficultySlider) {
@@ -573,6 +580,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      *
      * @param e
      */
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -585,7 +593,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             chess.Takeback();
 
             if (moveList.size() > 0) {
-                moveList.removeElementAt(moveList.size() - 1);
+                moveList.remove(moveList.size() - 1);
             }
 
             if (Chess.bThinking) {
@@ -593,7 +601,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
             } else {
                 chess.Takeback();
                 if (moveList.size() > 0) {
-                    moveList.removeElementAt(moveList.size() - 1);
+                    moveList.remove(moveList.size() - 1);
                 }
                 if (Graph.data.size() > 0) {
                     Graph.data.removeElementAt(Graph.data.size() - 1);
@@ -652,6 +660,7 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * @param e
      */
     @Override
+
     public void mouseClicked(MouseEvent e) {
     }
 
