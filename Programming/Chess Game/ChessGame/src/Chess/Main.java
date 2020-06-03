@@ -215,7 +215,6 @@ public class Main extends JFrame implements Runnable, MouseListener, MouseMotion
      * @see butt_SaveGame
      * @see butt_Takeback
      * @see butt_SetupBoard
-     * @see butt_Help#butt_Flip
      */
     Panel toolPanel;
 

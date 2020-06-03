@@ -65,10 +65,10 @@ public class Chess {
     };
 
     /**
-     * Piece indexes used to index the piece movement table when generating
-     * moves.
+     * Where it use to be
      *
-     * @see pieceMovementTable
+     * @see pieceMovementTable Piece indexes used to index the piece movement
+     * table when generating moves.
      */
     private final static int[] index = {
         0, 12, 15, 10, 1, 6, 6
@@ -113,6 +113,9 @@ public class Chess {
 
     /**
      * Test for a stalemate.
+     *
+     * @param p
+     * @return
      */
     public boolean drawnPosition(ChessPosition p) {
         return false;
@@ -120,6 +123,10 @@ public class Chess {
 
     /**
      * Tests whether a side has won the game, i.e. check for checkmates.
+     *
+     * @param p
+     * @param player
+     * @return
      */
     public boolean wonPosition(ChessPosition p, boolean player) {
         return false;
@@ -205,6 +212,11 @@ public class Chess {
 
     /**
      * Initiates the alphaBetaHelper function and handles iterative deepening.
+     *
+     * @param depth
+     * @param p
+     * @param player
+     * @return
      */
     protected ChessMove alphaBeta(int depth, ChessPosition p, boolean player) {
         nodeCount = 0;
@@ -251,7 +263,10 @@ public class Chess {
      * recursively calling itself and storing the best move.
      */
     public static ChessMove localBestMove = null;
-
+    /**
+     * THIS IS A TEST
+     * @see some more works
+     */
     public static boolean bCheck = false;
 
     public static ChessMove[] principalVariation = new ChessMove[16]; // there will under no circumstances be more than 16 moves in there :)
@@ -885,10 +900,10 @@ public class Chess {
                                 break inner;
                             }
                             if (next_square < 0) {
-                                break inner;
+                                break;
                             }
                             if (b[next_square] == 7) {
-                                break inner;
+                                break;
                             }
                             control[next_square] += 1;
 
@@ -962,6 +977,9 @@ public class Chess {
     /**
      * Takes a position stored in a string and converts it to a ChessPosition
      * for retrieving old games from database.
+     *
+     * @param s
+     * @return
      */
     public static ChessPosition decodePosition(String s) {
         ChessPosition p = new ChessPosition();
