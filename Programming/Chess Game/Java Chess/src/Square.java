@@ -14,7 +14,7 @@ public class Square extends JComponent {
     private boolean dispPiece;
 
     
-    private boolean move; // For if it is a valid mobe select yellow
+    private boolean move; // For if it is a valid move select yellow
     private int xNum;
     private int yNum;
 
