@@ -131,18 +131,7 @@ public class Chess {
     public boolean wonPosition(ChessPosition p, boolean player) {
         return false;
     }
-
-    /**
-     * Called by the alphaBetaHelper function to decide whether to cut-off at a
-     * certain depth. This function has been deprecated and is now in-lined with
-     * the alphaBetaHelper function for speed.
-     */
-    /*public boolean reachedMaxDepth( ChessPosition p, int depth )
-	{
-		if ( depth <= maxDepth && bThinking )
-			return false;
-		return true;
-	}*/
+    
     /**
      * A function used by the main class to check if a player's move is legal.
      * Returns true if it is legal, or false if it is not. Not used by AI.
@@ -170,23 +159,6 @@ public class Chess {
                 }
             }
         }
-        /*		if ( p.board[ move.to
-			 p.board[ move.to ] == 0 &&
-			 p.board[ )
-		{
-			if ( p.board[ move.to ] == 0 &&
-			if ( p.board[ move.from ] == player ? PAWN : -PAWN )
-			{
-						// En-passant for black
-						if ( piece < 0 && (b[move_offset-1] == 1) && move_offset >= 30 && move_offset < 40 )
-						{
-							piece_moves[count++] = move_offset;
-						} else
-						// En-passant for white
-						if ( move_offset >= 40 && move_offset < 48 ) // fifth row
-						{
-						}
-			}*/
 
         int nMoves = calcPieceMoves(p, move.from);
 
@@ -222,8 +194,6 @@ public class Chess {
         nodeCount = 0;
         reachedDepth = 0;
 
-        // Find out if anyone is currently in check (this is kinda skipped by 0-level a-b)
-        //calcPossibleMoves( p, player );
         if (maxDepth > 3 && bIterativeDeepening) {
             int prevDepth = maxDepth;
             maxDepth = 3;
@@ -238,7 +208,6 @@ public class Chess {
                     break;
                 }
             }
-//			int nodeCount
             maxDepth = prevDepth;
             bestMoveEval = beta;
         } else {
@@ -265,7 +234,6 @@ public class Chess {
     public static ChessMove localBestMove = null;
     /**
      * THIS IS A TEST
-     * @see some more works
      */
     public static boolean bCheck = false;
 
@@ -402,7 +370,7 @@ public class Chess {
      * A temporary variable used to display the score in the info panel and to
      * draw the score graph.
      */
-    public static float bestMoveEval; // used for display purposes
+    public static float bestMoveEval;
 
     /**
      * Invokes AI Move Computation. Calculates the best move and makes it.
@@ -458,9 +426,9 @@ public class Chess {
     }
 
     /**
-     * Some variables to hold check information
+     * 0 = No Side 1 = White -1 = Black
      */
-    int sideChecked = 0; // if 0, no side, if 1, white, if -1, black
+    int sideChecked = 0;
 
     /**
      * A grand part of Chessmate. This function analyses a given position and
@@ -793,7 +761,7 @@ public class Chess {
     }
 
     /**
-     * Calls NewGame() and initialises the temporary piece move lists.
+     * Calls NewGame() and initializes the temporary piece move lists.
      *
      * @param main
      */
@@ -856,7 +824,7 @@ public class Chess {
             } else {
                 control = humanControl;
             }
-            int count = 0, side_index, move_offset, temp, next_square;
+            int side_index, move_offset, next_square;
             int piece_index = index[piece_type];
             int move_index = pieceMovementTable[piece_index];
             if (piece < 0) {
@@ -909,30 +877,29 @@ public class Chess {
 
                             // the next statement should be augmented for x-ray analysis:
                             if (side_index < 0 && b[next_square] < 0) {
-                                break inner;
+                                break;
                             }
                             if (side_index > 0 && b[next_square] > 0 && b[next_square] != 7) {
-                                break inner;
+                                break;
                             }
 
                             // NOTE: prevents calculating guarding:
                             //if (b[next_square] != 0) break inner;
-                            if (piece_type == ChessPosition.PAWN
-                                    && (square_index / 10 == 3)) {
-                                break inner;
+                            if (piece_type == ChessPosition.PAWN && (square_index / 10 == 3)) {
+                                break;
                             }
                             if (piece_type == ChessPosition.KNIGHT) {
-                                break inner;
+                                break;
                             }
                             if (piece_type == ChessPosition.KING) {
-                                break inner;
+                                break;
                             }
 
                             next_square += pieceMovementTable[move_index];
                         }
                         move_index += 1;
                         if (pieceMovementTable[move_index] == 0) {
-                            break outer;
+                            break;
                         }
                         next_square = square_index + pieceMovementTable[move_index];
                     }
@@ -958,6 +925,8 @@ public class Chess {
      * This is used when encoding/decoding positions for storing and retrieving
      * from database.
      *
+     * @param square_index
+     * @return Returns the piece char value with empty being '0'
      * @see encodePosition
      * @see decodePosition
      */
@@ -968,9 +937,9 @@ public class Chess {
         if (square_index > 0) {
             return pieceChars[square_index - 1];
         }
-
+        
         square_index = -square_index;
-
+        
         return Character.toUpperCase(pieceChars[square_index - 1]);
     }
 
@@ -978,8 +947,8 @@ public class Chess {
      * Takes a position stored in a string and converts it to a ChessPosition
      * for retrieving old games from database.
      *
-     * @param s
-     * @return
+     * @param s ChessPiece
+     * @return a chess position based on the encoded string in the database
      */
     public static ChessPosition decodePosition(String s) {
         ChessPosition p = new ChessPosition();
@@ -1003,24 +972,21 @@ public class Chess {
                         }
                     }
 
-                    // Adjust for black pieces
-                    if (Character.isUpperCase(c)) {
+                    if (Character.isUpperCase(c)) { // Adjust for black pieces
                         p.board[index] = -p.board[index];
                     }
 
                 }
             }
         }
-
         return p;
     }
 
     /**
      * Takes a ChessPosition class and encodes it as a string for easy storing
      * in database.
-     *
-     * @param p
-     * @return
+     * @param p Chesspiece
+     * @return String that is encoded for easy storing
      */
     public static String encodePosition(ChessPosition p) {
         String str = new String();
