@@ -31,7 +31,7 @@ public class ChessPosition {
      * Applies the given move parameter to the board position saved in this
      * instance of the class.
      *
-     * @param move
+     * @param move Piece Moving
      */
     public void makeMove(ChessMove move) {
         board[move.to] = board[move.from];

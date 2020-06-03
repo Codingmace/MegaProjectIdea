@@ -47,7 +47,6 @@ class Graph extends Panel {
         prev.x = 0;
         prev.y = getHeight() / 2;
 
-        int nDraw = getWidth() / 2 / xSpacing;
         float fv = 0;
 
         for (int i = tempSize; i != 0; --i) {

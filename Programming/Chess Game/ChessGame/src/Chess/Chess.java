@@ -35,7 +35,6 @@ public class Chess {
      * An integer that holds the maximum recursive depth. This is controlled by
      * the difficulty slider in the Main class.
      *
-     * @see difficultySlider
      */
     public static int maxDepth = 5; // The Default AI Difficulty level
 
@@ -112,21 +111,17 @@ public class Chess {
     private static int[] piece_moves = new int[32];
 
     /**
-     * Test for a stalemate.
-     *
      * @param p
-     * @return
+     * @return If there is a stalemate
      */
     public boolean drawnPosition(ChessPosition p) {
         return false;
     }
 
     /**
-     * Tests whether a side has won the game, i.e. check for checkmates.
-     *
      * @param p
      * @param player
-     * @return
+     * @return Tests whether a side has won the game, i.e. check for checkmates.
      */
     public boolean wonPosition(ChessPosition p, boolean player) {
         return false;
@@ -176,10 +171,7 @@ public class Chess {
 
         calcPossibleMoves(np, !player);
 
-        if (player ? np.bWhiteChecked : np.bBlackChecked) {
-            return false;
-        }
-        return true;
+        return !(player ? np.bWhiteChecked : np.bBlackChecked);
     }
 
     /**
@@ -232,9 +224,7 @@ public class Chess {
      * recursively calling itself and storing the best move.
      */
     public static ChessMove localBestMove = null;
-    /**
-     * THIS IS A TEST
-     */
+
     public static boolean bCheck = false;
 
     public static ChessMove[] principalVariation = new ChessMove[16]; // there will under no circumstances be more than 16 moves in there :)
@@ -271,10 +261,8 @@ public class Chess {
                 if (depth == 2) {
                     return (maxDepth - depth + localMaxima + 1) * 2000;
                 }
-                //System.out.println("Detected checkmate.");
                 return (maxDepth - depth + localMaxima + 1) * 1000; // +1 so it's never 0;
-            }// else
-            //	return (maxDepth-depth+localMaxima+1) * -2000; // +1 so it's never 0;
+            }
         }
 
         if (depth > reachedDepth) {
@@ -405,8 +393,7 @@ public class Chess {
             startingPosition.makeMove(bestMove);
         }
 
-        while (true) // a dummy to avoid silly returns
-        {
+        while (true) { // a dummy to avoid silly returns
             // Do some tests about the current position
             if (wonPosition(startingPosition, PROGRAM)) {
                 System.out.println("Program won");

@@ -1,7 +1,6 @@
 package Chess;
 
-public class ChessMove// implements Comparator
-{
+public class ChessMove {// implements Comparator
 
     public int from;
     public int to;
